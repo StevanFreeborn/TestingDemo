@@ -8,7 +8,7 @@ public class MongoUserRepository : IUserRepository
     _context = context;
   }
 
-  public async Task<User> GetByIdAsync(string id)
+  public async Task<User?> GetByIdAsync(string id)
   {
     return await _context.Users.Find(u => u.Id == id).FirstOrDefaultAsync();
   }
@@ -17,5 +17,10 @@ public class MongoUserRepository : IUserRepository
   {
     await _context.Users.InsertOneAsync(user);
     return user;
+  }
+
+  public async Task<User?> GetByUsernameAsync(string username)
+  {
+    return await _context.Users.Find(u => u.Username == username).FirstOrDefaultAsync();
   }
 }

@@ -9,14 +9,12 @@ builder.Services.AddSingleton(
 );
 
 builder.Services.AddSingleton<MongoDbContext>();
-
 builder.Services.AddScoped<IUserRepository, MongoUserRepository>();
 
+builder.Services.AddScoped<UserService>();
+
 builder.Services.AddAutoMapper(
-  config =>
-  {
-    config.AddProfile<MapperProfile>();
-  }
+  config => config.AddProfile<MapperProfile>()
 );
 
 builder.Services.AddControllers();
@@ -34,6 +32,8 @@ builder.Services.AddApiVersioning(
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ErrorHandling>();
 
 if (app.Environment.IsDevelopment())
 {
