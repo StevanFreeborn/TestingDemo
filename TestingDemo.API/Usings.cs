@@ -1,0 +1,10 @@
+global using AutoMapper;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.Versioning;
+global using Microsoft.Extensions.Options;
+global using MongoDB.Bson;
+global using TestingDemo.API.Dtos;
+global using TestingDemo.Core;
+global using TestingDemo.Core.Interfaces;
+global using TestingDemo.Infrastructure.Data.Mongo;
+global using TestingDemo.Infrastructure.Data.Mongo.Repositories;
