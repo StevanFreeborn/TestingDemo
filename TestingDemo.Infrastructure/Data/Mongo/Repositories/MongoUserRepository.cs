@@ -1,8 +1,3 @@
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using TestingDemo.Core;
-using TestingDemo.Core.Interfaces;
-
 namespace TestingDemo.Infrastructure.Data.Mongo.Repositories;
 
 public class MongoUserRepository : IUserRepository

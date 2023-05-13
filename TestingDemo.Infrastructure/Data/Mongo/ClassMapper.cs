@@ -1,8 +1,3 @@
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.IdGenerators;
-using MongoDB.Bson.Serialization.Serializers;
-using TestingDemo.Core;
-
 namespace TestingDemo.Infrastructure.Data.Mongo;
 
 public static class ClassMapper

@@ -1,6 +1,3 @@
-using MongoDB.Driver;
-using TestingDemo.Core;
-
 namespace TestingDemo.Infrastructure.Data.Mongo;
 
 public class MongoDbContext
