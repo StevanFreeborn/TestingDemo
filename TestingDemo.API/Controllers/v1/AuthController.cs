@@ -6,12 +6,22 @@ namespace TestingDemo.API.Controllers;
 [Produces("application/json")]
 public class AuthController : ControllerBase
 {
-  private readonly UserService _userService;
   private readonly IMapper _mapper;
-  public AuthController(UserService userService, IMapper mapper)
+  private readonly UserService _userService;
+  private readonly EmailService _emailService;
+  private readonly TokenService _tokenService;
+
+  public AuthController(
+    IMapper mapper,
+    UserService userService,
+    EmailService emailService,
+    TokenService tokenService
+  )
   {
-    _userService = userService;
     _mapper = mapper;
+    _userService = userService;
+    _emailService = emailService;
+    _tokenService = tokenService;
   }
 
   [MapToApiVersion("1.0")]
@@ -25,5 +35,18 @@ public class AuthController : ControllerBase
     var authUser = _mapper.Map<AuthUserDto>(user);
     authUser.Token = "a jwt token";
     return Ok(authUser);
+  }
+
+  [MapToApiVersion("1.0")]
+  [HttpPost("forgot-password")]
+  [ProducesResponseType(StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+  public async Task<IActionResult> ResetPassword(ForgotPasswordRequestDto resetRequest)
+  {
+    var token = _tokenService.GenerateResetPasswordToken();
+    var user = await _userService.SetUserPasswordResetToken(resetRequest.Username, token);
+    await _emailService.SendPasswordResetEmail(user.Email, token);
+    return Ok();
   }
 }

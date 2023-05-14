@@ -57,4 +57,19 @@ public class UserService
     await _userRepository.CreateUserAsync(user);
     return user;
   }
+
+  public async Task<User> SetUserPasswordResetToken(string username, string token)
+  {
+    var existingUser = await _userRepository.GetByUsernameAsync(username);
+
+    if (existingUser == null)
+    {
+      throw new InvalidForgotPasswordRequestException();
+    }
+
+    existingUser.PasswordResetToken = token;
+    existingUser.PasswordResetTokenExpiration = DateTime.UtcNow.AddMinutes(15);
+
+    return await _userRepository.UpdateUserAsync(existingUser);
+  }
 }
