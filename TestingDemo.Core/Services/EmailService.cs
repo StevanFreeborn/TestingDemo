@@ -14,7 +14,7 @@ public class EmailService
   public async Task SendPasswordResetEmail(string email, string token)
   {
     var lineOne = "In order to reset your password, please open the following link in a web browser and follow the instructions.";
-    var resetLink = $"https://localhost:3000/Public/ResetPassword?t={token}";
+    var resetLink = $"https://localhost:3000/reset-password?t={token}";
     var lineTwo = "If you did not submit a request to reset your password please ignore this email.";
 
     var subject = "Password Reset";

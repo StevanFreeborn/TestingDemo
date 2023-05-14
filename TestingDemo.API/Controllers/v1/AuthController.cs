@@ -42,11 +42,22 @@ public class AuthController : ControllerBase
   [ProducesResponseType(StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-  public async Task<IActionResult> ResetPassword(ForgotPasswordRequestDto resetRequest)
+  public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDto forgotRequest)
   {
     var token = _tokenService.GenerateResetPasswordToken();
-    var user = await _userService.SetUserPasswordResetToken(resetRequest.Username, token);
+    var user = await _userService.SetUserPasswordResetToken(forgotRequest.Username, token);
     await _emailService.SendPasswordResetEmail(user.Email, token);
+    return Ok();
+  }
+
+  [MapToApiVersion("1.0")]
+  [HttpPost("reset-password")]
+  [ProducesResponseType(StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+  public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto resetRequest)
+  {
+    await _userService.UpdateUserPassword(resetRequest.Token, resetRequest.NewPassword);
     return Ok();
   }
 }

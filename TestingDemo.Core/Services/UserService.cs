@@ -70,6 +70,38 @@ public class UserService
     existingUser.PasswordResetToken = token;
     existingUser.PasswordResetTokenExpiration = DateTime.UtcNow.AddMinutes(15);
 
-    return await _userRepository.UpdateUserAsync(existingUser);
+    var updatedUser = await _userRepository.UpdateUserAsync(existingUser);
+
+    if (updatedUser == null)
+    {
+      throw new ModelNotUpdatedException($"Unable to update user {username} with reset token");
+    }
+
+    return updatedUser;
+  }
+
+  public async Task UpdateUserPassword(string token, string newPassword)
+  {
+    var existingUser = await _userRepository.GetByResetToken(token);
+
+    if (existingUser == null || existingUser.PasswordResetTokenExpiration < DateTime.UtcNow)
+    {
+      throw new InvalidResetPasswordTokenException();
+    }
+
+    var newPasswordHash = Authenticator.HashPassword(newPassword, existingUser.Salt);
+
+    existingUser.Password = newPasswordHash;
+    existingUser.PasswordResetToken = null;
+    existingUser.PasswordResetTokenExpiration = null;
+
+    var updatedUser = await _userRepository.UpdateUserAsync(existingUser);
+
+    if (updatedUser != null)
+    {
+      return;
+    }
+
+    throw new ModelNotUpdatedException($"Unable to update user {existingUser.Username}'s password");
   }
 }

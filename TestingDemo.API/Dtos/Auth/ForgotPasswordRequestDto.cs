@@ -1,4 +1,4 @@
-namespace TestingDemo.API.Dtos;
+namespace TestingDemo.API.Dtos.Auth;
 
 public class ForgotPasswordRequestDto
 {

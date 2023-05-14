@@ -11,8 +11,11 @@ global using Microsoft.Extensions.Options;
 global using MongoDB.Bson;
 
 global using TestingDemo.API.Dtos;
+global using TestingDemo.API.Dtos.Auth;
+global using TestingDemo.API.Dtos.Users;
 global using TestingDemo.API.Middleware;
 global using TestingDemo.API.Services;
+global using TestingDemo.API.Validation;
 global using TestingDemo.Core.Exceptions;
 global using TestingDemo.Core.Interfaces;
 global using TestingDemo.Core.Models;
