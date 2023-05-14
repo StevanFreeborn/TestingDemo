@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
 
   [MapToApiVersion("1.0")]
   [HttpPost]
-  [ProducesResponseType(typeof(CreatedResult), StatusCodes.Status201Created)]
+  [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> CreateUserAsync(NewUserDto user)

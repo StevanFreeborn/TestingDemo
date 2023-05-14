@@ -20,6 +20,25 @@ public class UserService
     return user;
   }
 
+  public async Task<User> LogUserInAsync(string username, string password)
+  {
+    var user = await _userRepository.GetByUsernameAsync(username);
+
+    if (user == null)
+    {
+      throw new InvalidLoginException();
+    }
+
+    var isCorrectPassword = Authenticator.VerifyPassword(password, user.Password, user.Salt);
+
+    if (isCorrectPassword == false)
+    {
+      throw new InvalidLoginException();
+    }
+
+    return user;
+  }
+
   public async Task<User> CreateUserAsync(User user)
   {
     var existingUser = await _userRepository.GetByUsernameAsync(user.Username);

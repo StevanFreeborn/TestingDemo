@@ -6,6 +6,10 @@ public class MapperProfile : Profile
   {
     CreateMap<User, NewUserDto>().ReverseMap();
     CreateMap<User, UserDto>().ReverseMap();
-
+    CreateMap<User, AuthUserDto>()
+    .ForMember(
+      dest => dest.User,
+      opt => opt.MapFrom(src => src)
+    );
   }
 }

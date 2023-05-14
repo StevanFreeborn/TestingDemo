@@ -29,15 +29,16 @@ public class ErrorHandling
     var code = ex switch
     {
       ValidationException
-      or ModelAlreadyExistsException => HttpStatusCode.BadRequest,
+      or ModelAlreadyExistsException
+      or InvalidLoginException => HttpStatusCode.BadRequest,
       ModelNotFoundException => HttpStatusCode.NotFound,
       _ => HttpStatusCode.InternalServerError,
     };
 
     return new ProblemDetails
     {
-      Status = (int)code,
-      Title = "An error occurred while processing the request",
+      Status = (int) code,
+      Title = "An problem occurred while processing the request",
       Detail = ex.Message,
     };
   }
