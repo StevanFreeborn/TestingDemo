@@ -12,6 +12,10 @@ builder.Services.Configure<EmailSettings>(
   builder.Configuration.GetSection("Email")
 );
 
+builder.Services.Configure<TokenSettings>(
+  builder.Configuration.GetSection("Jwt")
+);
+
 builder.Services.AddSingleton(
   sp => sp.GetRequiredService<IOptions<MongoDbSettings>>().Value
 );
@@ -22,6 +26,10 @@ builder.Services.AddSingleton(
 
 builder.Services.AddSingleton(
   sp => sp.GetRequiredService<IOptions<EmailSettings>>().Value
+);
+
+builder.Services.AddSingleton(
+  sp => sp.GetRequiredService<IOptions<TokenSettings>>().Value
 );
 
 builder.Services.AddSingleton<MongoDbContext>();
@@ -35,6 +43,28 @@ builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddAutoMapper(
   config => config.AddProfile<MapperProfile>()
+);
+
+builder.Services
+.AddAuthentication(
+  x =>
+  {
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+  }
+)
+.AddJwtBearer(
+  options => options.TokenValidationParameters = new TokenValidationParameters
+  {
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(
+      Encoding.UTF8.GetBytes(
+        builder.Configuration.GetSection("JWT:Key").Value!
+      )
+    ),
+    ValidIssuer = builder.Configuration.GetSection("JWT:Issuer").Value,
+    ValidAudience = builder.Configuration.GetSection("JWT:Audience").Value,
+  }
 );
 
 builder.Services.AddControllers();
@@ -62,6 +92,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
