@@ -30,7 +30,8 @@ public class ErrorHandling
     {
       ValidationException
       or ModelAlreadyExistsException
-      or InvalidLoginException => HttpStatusCode.BadRequest,
+      or InvalidLoginException
+      or InvalidForgotPasswordRequestException => HttpStatusCode.BadRequest,
       ModelNotFoundException => HttpStatusCode.NotFound,
       _ => HttpStatusCode.InternalServerError,
     };
