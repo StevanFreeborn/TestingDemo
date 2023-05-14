@@ -14,20 +14,20 @@ public class EmailService
   public async Task SendPasswordResetEmail(string email, string token)
   {
     var lineOne = "In order to reset your password, please open the following link in a web browser and follow the instructions.";
-    var resetLink = $"https://localhost:3000/Public/ResetPassword?t=${token}";
+    var resetLink = $"https://localhost:3000/Public/ResetPassword?t={token}";
     var lineTwo = "If you did not submit a request to reset your password please ignore this email.";
 
     var subject = "Password Reset";
     var htmlContent = $@"
-      <h2>Onspring Password Reset</h2>
+      <h2>Password Reset</h2>
         <p>
-          ${lineOne}
+          {lineOne}
         </p>
         <p>
-          <a href=""https://localhost:3000/Public/ResetPassword?t=${token}"" target=""_blank""</a>
+          <a href=""{resetLink}"" target=""_blank"">{resetLink}</a>
         </p>
         <p>
-          ${lineTwo}
+          {lineTwo}
         </p>
     ";
     var textContent = $@"{lineOne}: {resetLink}. {lineTwo}";
