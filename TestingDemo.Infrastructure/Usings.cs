@@ -1,3 +1,4 @@
+global using MongoDB.Bson;
 global using MongoDB.Bson.Serialization;
 global using MongoDB.Bson.Serialization.IdGenerators;
 global using MongoDB.Driver;
