@@ -22,7 +22,7 @@ public class SendGridProvider : IEmailProvider
 
     var response = await _client.SendEmailAsync(msg);
 
-    if (response.IsSuccessStatusCode == true)
+    if (response.IsSuccessStatusCode is true)
     {
       return;
     }

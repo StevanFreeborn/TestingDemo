@@ -23,7 +23,7 @@ public class UsersController : ControllerBase
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> GetUserByIdAsync(string id)
   {
-    if (!ObjectId.TryParse(id, out _))
+    if (ObjectId.TryParse(id, out _) is false)
     {
       throw new ValidationException($"{id} is not a valid user id");
     }

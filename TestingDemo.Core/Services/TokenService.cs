@@ -36,19 +36,19 @@ public class TokenService
 
   public async Task<AuthToken> VerifyAndGetRefreshToken(string? token, string userId)
   {
-    if (token == null)
+    if (token is null)
     {
       throw new InvalidRefreshTokenException();
     }
 
     var refreshToken = await _tokenRepository.GetToken(token, AuthTokenType.RefreshToken);
 
-    if (refreshToken == null || userId == null)
+    if (refreshToken is null || userId is null)
     {
       throw new InvalidRefreshTokenException();
     }
 
-    if (refreshToken.Revoked == true || refreshToken.UserId != userId)
+    if (refreshToken.Revoked is true || refreshToken.UserId != userId)
     {
       await _tokenRepository.RevokeAllRefreshTokensForUser(refreshToken.UserId);
       throw new InvalidRefreshTokenException();
@@ -66,7 +66,7 @@ public class TokenService
   {
     var authToken = await _tokenRepository.GetToken(token, AuthTokenType.PasswordResetToken);
 
-    if (authToken == null || authToken.ExpiresAt < DateTime.UtcNow)
+    if (authToken is null || authToken.ExpiresAt < DateTime.UtcNow)
     {
       throw new InvalidResetPasswordTokenException();
     }
