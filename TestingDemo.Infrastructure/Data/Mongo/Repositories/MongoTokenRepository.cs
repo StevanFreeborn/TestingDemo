@@ -44,4 +44,14 @@ public class MongoTokenRepository : ITokenRepository
 
     await _context.AuthTokens.DeleteManyAsync(filter);
   }
+
+  public async Task RevokeAllRefreshTokensForUser(string userId)
+  {
+    var filter = Builders<AuthToken>.Filter.Eq(t => t.UserId, userId);
+    var updates = Builders<AuthToken>.Update
+    .Set(t => t.Revoked, true)
+    .Set(t => t.UpdatedAt, DateTime.UtcNow);
+
+    await _context.AuthTokens.UpdateManyAsync(filter, updates);
+  }
 }

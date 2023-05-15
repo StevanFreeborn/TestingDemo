@@ -1,8 +1,9 @@
 namespace TestingDemo.Core.Models;
 
-public class TokenSettings
+public class JwtTokenSettings
 {
-  public string JwtKey { get; set; } = string.Empty;
-  public string JwtIssuer { get; set; } = string.Empty;
-  public string JwtAudience { get; set; } = string.Empty;
+  public string Key { get; set; } = string.Empty;
+  public string Issuer { get; set; } = string.Empty;
+  public string Audience { get; set; } = string.Empty;
+  public int TokenLifetimeMinutes { get; set; } = 10;
 }

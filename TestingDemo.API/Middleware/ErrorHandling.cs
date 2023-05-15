@@ -32,7 +32,8 @@ public class ErrorHandling
       or ModelAlreadyExistsException
       or InvalidLoginException
       or InvalidForgotPasswordRequestException
-      or InvalidResetPasswordTokenException => HttpStatusCode.BadRequest,
+      or InvalidResetPasswordTokenException
+      or InvalidRefreshTokenException => HttpStatusCode.BadRequest,
       ModelNotFoundException => HttpStatusCode.NotFound,
       _ => HttpStatusCode.InternalServerError,
     };
