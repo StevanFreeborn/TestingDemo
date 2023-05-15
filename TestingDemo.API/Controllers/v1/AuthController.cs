@@ -111,7 +111,7 @@ public class AuthController : ControllerBase
     return Ok();
   }
 
-  private string? GetRefreshTokenFromRequest(HttpRequest req)
+  private static string? GetRefreshTokenFromRequest(HttpRequest req)
   {
     return req.Cookies[RefreshTokenName];
   }
@@ -130,9 +130,9 @@ public class AuthController : ControllerBase
     );
   }
 
-  private string? GetUserIdFromContext(HttpContext context)
+  private static string? GetUserIdFromContext(HttpContext context)
   {
-    return HttpContext.User.Identity?.Name;
+    return context.User.Identity?.Name;
   }
 
   private AuthUserDto GetAuthUserResponse(User user)
