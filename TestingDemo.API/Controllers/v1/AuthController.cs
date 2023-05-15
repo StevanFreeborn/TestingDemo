@@ -36,16 +36,9 @@ public class AuthController : ControllerBase
   public async Task<IActionResult> Login(UserAuthRequestDto authRequest)
   {
     var user = await _userService.LogUserInAsync(authRequest.Username, authRequest.Password);
-    var authUser = _mapper.Map<AuthUserDto>(user);
-    var (jwtExpiration, jwtToken) = GenerateUserJWT(user);
-    authUser.Token = jwtToken;
-    authUser.ExpiresIn = (int) jwtExpiration.Subtract(DateTime.UtcNow).TotalMilliseconds;
+    var authUser = GetAuthUserResponse(user);
     var refreshToken = await _tokenService.CreateRefreshTokenForUser(user);
-    Response.Cookies.Append(
-      RefreshTokenName,
-      refreshToken.Token,
-      new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict }
-    );
+    SetRefreshCookie(Response, refreshToken);
     return Ok(authUser);
   }
 
@@ -53,7 +46,7 @@ public class AuthController : ControllerBase
   [MapToApiVersion("1.0")]
   [HttpGet("refresh-token")]
   [ProducesResponseType(typeof(AuthUserDto), StatusCodes.Status200OK)]
-  [ProducesResponseType(typeof(AuthUserDto), StatusCodes.Status401Unauthorized)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> RefreshToken()
@@ -61,8 +54,15 @@ public class AuthController : ControllerBase
     var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.NameId);
     var refreshToken = Request.Cookies[RefreshTokenName];
     await _tokenService.VerifyRefreshToken(refreshToken, userId);
-    // TODO: Finish logic
-    return Ok();
+    await _tokenService.RemoveExpiredAndRevokedRefreshTokensForUser(userId!.Value);
+
+    var user = await _userService.GetUserByIdAsync(userId.Value);
+    var authUser = GetAuthUserResponse(user);
+
+    var newRefreshToken = await _tokenService.CreateRefreshTokenForUser(user);
+    SetRefreshCookie(Response, newRefreshToken);
+
+    return Ok(authUser);
   }
 
   [MapToApiVersion("1.0")]
@@ -90,6 +90,26 @@ public class AuthController : ControllerBase
     await _tokenService.RevokeToken(authToken);
     await _tokenService.RemoveExpiredAndRevokedPasswordResetTokensForUser(updatedUser.Id);
     return Ok();
+  }
+
+  private static void SetRefreshCookie(HttpResponse res, AuthToken refreshToken)
+  {
+    res.Cookies.Append(
+      RefreshTokenName,
+      refreshToken.Token,
+      new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict }
+    );
+  }
+
+  private AuthUserDto GetAuthUserResponse(User user)
+  {
+    var authUser = _mapper.Map<AuthUserDto>(user);
+    var (jwtExpiration, jwtToken) = GenerateUserJWT(user);
+
+    authUser.Token = jwtToken;
+    authUser.ExpiresIn = (int) jwtExpiration.Subtract(DateTime.UtcNow).TotalMilliseconds;
+
+    return authUser;
   }
 
   private (DateTime expiration, string jwtToken) GenerateUserJWT(User user)

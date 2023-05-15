@@ -36,28 +36,26 @@ public class TokenService
 
   public async Task VerifyRefreshToken(string? token, Claim? userId)
   {
-    // TODO: throw custom refresh token exception
     if (token == null)
     {
-      // throw invalid refresh token exception
-      throw new ApplicationException();
+      throw new InvalidRefreshToken();
     }
     var refreshToken = await _tokenRepository.GetToken(token, AuthTokenType.RefreshToken);
 
-    if (refreshToken == null || userId == null || refreshToken.UserId != userId.Value)
+    if (refreshToken == null || userId == null)
     {
-      throw new ApplicationException();
+      throw new InvalidRefreshToken();
     }
 
-    if (refreshToken.Revoked == true)
+    if (refreshToken.Revoked == true || refreshToken.UserId != userId.Value)
     {
-      // throw new invalid refresh token exception
-      // and invalidate all refresh tokens for user
+      await _tokenRepository.RevokeAllRefreshTokensForUser(refreshToken.UserId);
+      throw new InvalidRefreshToken();
     }
 
     if (refreshToken.ExpiresAt < DateTime.UtcNow)
     {
-      // throw new invalid refresh token exception
+      throw new InvalidRefreshToken();
     }
   }
 
@@ -90,6 +88,11 @@ public class TokenService
   public async Task RemoveExpiredAndRevokedPasswordResetTokensForUser(string userId)
   {
     await _tokenRepository.DeleteUsersRevokedAndExpiredTokens(userId, AuthTokenType.PasswordResetToken);
+  }
+
+  public async Task RemoveExpiredAndRevokedRefreshTokensForUser(string userId)
+  {
+    await _tokenRepository.DeleteUsersRevokedAndExpiredTokens(userId, AuthTokenType.RefreshToken);
   }
 
   private static string GenerateToken()
