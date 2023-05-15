@@ -89,25 +89,10 @@ builder.Services.AddSwaggerGen(
       {
         Description = "JWT Authorization header using the Bearer scheme.",
         Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
+        Scheme = "Bearer",
       }
     );
-    config.AddSecurityRequirement(
-      new OpenApiSecurityRequirement
-      {
-        {
-          new OpenApiSecurityScheme
-          {
-              Reference = new OpenApiReference
-              {
-                  Type = ReferenceType.SecurityScheme,
-                  Id = "Bearer"
-              }
-          },
-          Array.Empty<string>()
-        }
-      }
-    );
+    config.OperationFilter<AuthorizeOperationFilter>();
   }
 );
 
