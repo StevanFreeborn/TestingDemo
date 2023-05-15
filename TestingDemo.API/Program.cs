@@ -12,8 +12,8 @@ builder.Services.Configure<EmailSettings>(
   builder.Configuration.GetSection("Email")
 );
 
-builder.Services.Configure<TokenSettings>(
-  builder.Configuration.GetSection("Jwt")
+builder.Services.Configure<JwtTokenSettings>(
+  builder.Configuration.GetSection("JWT")
 );
 
 builder.Services.AddSingleton(
@@ -29,7 +29,7 @@ builder.Services.AddSingleton(
 );
 
 builder.Services.AddSingleton(
-  sp => sp.GetRequiredService<IOptions<TokenSettings>>().Value
+  sp => sp.GetRequiredService<IOptions<JwtTokenSettings>>().Value
 );
 
 builder.Services.AddSingleton<MongoDbContext>();
@@ -80,7 +80,36 @@ builder.Services.AddApiVersioning(
   }
 );
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(
+  config =>
+  {
+    config.AddSecurityDefinition(
+      "Bearer",
+      new OpenApiSecurityScheme
+      {
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+      }
+    );
+    config.AddSecurityRequirement(
+      new OpenApiSecurityRequirement
+      {
+        {
+          new OpenApiSecurityScheme
+          {
+              Reference = new OpenApiReference
+              {
+                  Type = ReferenceType.SecurityScheme,
+                  Id = "Bearer"
+              }
+          },
+          Array.Empty<string>()
+        }
+      }
+    );
+  }
+);
 
 var app = builder.Build();
 

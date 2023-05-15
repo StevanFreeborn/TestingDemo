@@ -2,12 +2,10 @@ namespace TestingDemo.Core.Services;
 
 public class TokenService
 {
-  private readonly TokenSettings _tokenSettings;
   private readonly ITokenRepository _tokenRepository;
 
-  public TokenService(TokenSettings tokenSettings, ITokenRepository tokenRepository)
+  public TokenService(ITokenRepository tokenRepository)
   {
-    _tokenSettings = tokenSettings;
     _tokenRepository = tokenRepository;
   }
 
@@ -21,6 +19,45 @@ public class TokenService
       TokenType = AuthTokenType.PasswordResetToken,
     };
     return await _tokenRepository.CreateTokenAsync(authToken);
+  }
+
+  public async Task<AuthToken> CreateRefreshTokenForUser(User user)
+  {
+    var authToken = new AuthToken
+    {
+      UserId = user.Id,
+      Token = GenerateToken(),
+      ExpiresAt = DateTime.UtcNow.AddDays(7),
+      TokenType = AuthTokenType.RefreshToken,
+    };
+
+    return await _tokenRepository.CreateTokenAsync(authToken);
+  }
+
+  public async Task VerifyRefreshToken(string? token, Claim? userId)
+  {
+    if (token == null)
+    {
+      // throw invalid refresh token exception
+      throw new ApplicationException();
+    }
+    var refreshToken = await _tokenRepository.GetToken(token, AuthTokenType.RefreshToken);
+
+    if (refreshToken == null || userId == null || refreshToken.UserId != userId.Value)
+    {
+      throw new ApplicationException();
+    }
+
+    if (refreshToken.Revoked == true)
+    {
+      // throw new invalid refresh token exception
+      // and invalidate all refresh tokens for user
+    }
+
+    if (refreshToken.ExpiresAt < DateTime.UtcNow)
+    {
+      // throw new invalid refresh token exception
+    }
   }
 
   public async Task<AuthToken> GetPasswordResetToken(string token)
