@@ -33,26 +33,44 @@ public class AuthController : ControllerBase
   [ProducesResponseType(typeof(AuthUserDto), StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-  public async Task<IActionResult> Login(UserAuthRequestDto authRequest)
+  public async Task<IActionResult> LogIn(UserAuthRequestDto authRequest)
   {
     var user = await _userService.LogUserInAsync(authRequest.Username, authRequest.Password);
     var authUser = GetAuthUserResponse(user);
     var refreshToken = await _tokenService.CreateRefreshTokenForUser(user);
-    SetRefreshCookie(Response, refreshToken);
+    SetRefreshCookie(Response, refreshToken.Token, refreshToken.ExpiresAt);
     return Ok(authUser);
   }
 
   [Authorize]
   [MapToApiVersion("1.0")]
-  [HttpGet("refresh-token")]
-  [ProducesResponseType(typeof(AuthUserDto), StatusCodes.Status200OK)]
+  [HttpPost("logout")]
+  [ProducesResponseType(StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+  public async Task<IActionResult> LogOut()
+  {
+    var userId = GetUserIdFromContext(HttpContext)!;
+    var refreshToken = GetRefreshTokenFromRequest(Request);
+    var authToken = await _tokenService.VerifyAndGetRefreshToken(refreshToken, userId);
+    await _tokenService.RevokeToken(authToken);
+    await _tokenService.RemoveExpiredAndRevokedRefreshTokensForUser(userId);
+    SetRefreshCookie(Response, string.Empty, DateTime.MinValue);
+    return Ok();
+  }
+
+  [Authorize]
+  [MapToApiVersion("1.0")]
+  [HttpPost("refresh-token")]
+  [ProducesResponseType(typeof(AuthUserDto), StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> RefreshToken()
   {
-    var userId = HttpContext.User.Identity!.Name!;
-    var refreshToken = Request.Cookies[RefreshTokenName];
+    var userId = GetUserIdFromContext(HttpContext)!;
+    var refreshToken = GetRefreshTokenFromRequest(Request);
     var authRefreshToken = await _tokenService.VerifyAndGetRefreshToken(refreshToken, userId);
     await _tokenService.RevokeToken(authRefreshToken);
     await _tokenService.RemoveExpiredAndRevokedRefreshTokensForUser(userId);
@@ -61,7 +79,7 @@ public class AuthController : ControllerBase
     var authUser = GetAuthUserResponse(user);
 
     var newRefreshToken = await _tokenService.CreateRefreshTokenForUser(user);
-    SetRefreshCookie(Response, newRefreshToken);
+    SetRefreshCookie(Response, newRefreshToken.Token, newRefreshToken.ExpiresAt);
 
     return Ok(authUser);
   }
@@ -93,13 +111,28 @@ public class AuthController : ControllerBase
     return Ok();
   }
 
-  private static void SetRefreshCookie(HttpResponse res, AuthToken refreshToken)
+  private string? GetRefreshTokenFromRequest(HttpRequest req)
+  {
+    return req.Cookies[RefreshTokenName];
+  }
+
+  private static void SetRefreshCookie(HttpResponse res, string cookieValue, DateTime cookieExpiration)
   {
     res.Cookies.Append(
       RefreshTokenName,
-      refreshToken.Token,
-      new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict }
+      cookieValue,
+      new CookieOptions
+      {
+        HttpOnly = true,
+        SameSite = SameSiteMode.Strict,
+        Expires = cookieExpiration,
+      }
     );
+  }
+
+  private string? GetUserIdFromContext(HttpContext context)
+  {
+    return HttpContext.User.Identity?.Name;
   }
 
   private AuthUserDto GetAuthUserResponse(User user)
