@@ -44,9 +44,9 @@ public class AuthController : ControllerBase
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDto forgotRequest)
   {
-    var token = _tokenService.GenerateResetPasswordToken();
-    var user = await _userService.SetUserPasswordResetToken(forgotRequest.Username, token);
-    await _emailService.SendPasswordResetEmail(user.Email, token);
+    var user = await _userService.GetUserByUsernameAsync(forgotRequest.Username);
+    var resetPasswordToken = await _tokenService.CreateResetPasswordTokenForUser(user);
+    await _emailService.SendPasswordResetEmail(user.Email, resetPasswordToken.Token);
     return Ok();
   }
 
@@ -57,7 +57,10 @@ public class AuthController : ControllerBase
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto resetRequest)
   {
-    await _userService.UpdateUserPassword(resetRequest.Token, resetRequest.NewPassword);
+    var authToken = await _tokenService.GetPasswordResetToken(resetRequest.Token);
+    var updatedUser = await _userService.UpdateUserPassword(authToken.UserId, resetRequest.NewPassword);
+    await _tokenService.RevokeToken(authToken);
+    await _tokenService.RemoveExpiredAndRevokedPasswordResetTokensForUser(updatedUser.Id);
     return Ok();
   }
 }

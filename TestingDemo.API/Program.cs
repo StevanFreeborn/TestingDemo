@@ -34,6 +34,7 @@ builder.Services.AddSingleton(
 
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IUserRepository, MongoUserRepository>();
+builder.Services.AddScoped<ITokenRepository, MongoTokenRepository>();
 
 builder.Services.AddScoped<IEmailProvider, SendGridProvider>();
 
