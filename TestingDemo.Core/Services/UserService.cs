@@ -58,33 +58,23 @@ public class UserService
     return user;
   }
 
-  public async Task<User> SetUserPasswordResetToken(string username, string token)
+  public async Task<User> GetUserByUsernameAsync(string username)
   {
-    var existingUser = await _userRepository.GetByUsernameAsync(username);
+    var user = await _userRepository.GetByUsernameAsync(username);
 
-    if (existingUser == null)
+    if (user == null)
     {
-      throw new InvalidForgotPasswordRequestException();
+      throw new ModelNotFoundException($"No user with username {username} found");
     }
 
-    existingUser.PasswordResetToken = token;
-    existingUser.PasswordResetTokenExpiration = DateTime.UtcNow.AddMinutes(15);
-
-    var updatedUser = await _userRepository.UpdateUserAsync(existingUser);
-
-    if (updatedUser == null)
-    {
-      throw new ModelNotUpdatedException($"Unable to update user {username} with reset token");
-    }
-
-    return updatedUser;
+    return user;
   }
 
-  public async Task UpdateUserPassword(string token, string newPassword)
+  public async Task<User> UpdateUserPassword(string userId, string newPassword)
   {
-    var existingUser = await _userRepository.GetByResetToken(token);
+    var existingUser = await _userRepository.GetByIdAsync(userId);
 
-    if (existingUser == null || existingUser.PasswordResetTokenExpiration < DateTime.UtcNow)
+    if (existingUser == null)
     {
       throw new InvalidResetPasswordTokenException();
     }
@@ -92,16 +82,14 @@ public class UserService
     var newPasswordHash = Authenticator.HashPassword(newPassword, existingUser.Salt);
 
     existingUser.Password = newPasswordHash;
-    existingUser.PasswordResetToken = null;
-    existingUser.PasswordResetTokenExpiration = null;
 
     var updatedUser = await _userRepository.UpdateUserAsync(existingUser);
 
-    if (updatedUser != null)
+    if (updatedUser == null)
     {
-      return;
+      throw new ModelNotUpdatedException($"Unable to update user {existingUser.Username}'s password");
     }
 
-    throw new ModelNotUpdatedException($"Unable to update user {existingUser.Username}'s password");
+    return updatedUser;
   }
 }
