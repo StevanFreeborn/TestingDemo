@@ -19,12 +19,8 @@ public static class Authenticator
   public static string GenerateRandomSalt()
   {
     var saltBytes = new byte[32];
-
-    using (var rng = RandomNumberGenerator.Create())
-    {
-      rng.GetBytes(saltBytes);
-    }
-
+    using var rng = RandomNumberGenerator.Create();
+    rng.GetBytes(saltBytes);
     return Convert.ToBase64String(saltBytes);
   }
 

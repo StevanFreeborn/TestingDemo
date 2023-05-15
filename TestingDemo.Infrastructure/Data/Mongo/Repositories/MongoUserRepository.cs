@@ -26,7 +26,7 @@ public class MongoUserRepository : IUserRepository
 
   public async Task<User?> UpdateUserAsync(User updatedUser)
   {
-    var filter = Builders<User>.Filter.Eq(x => x.Id, updatedUser.Id);
+    var filter = Builders<User>.Filter.Eq(u => u.Id, updatedUser.Id);
     var options = new FindOneAndReplaceOptions<User, User>
     {
       ReturnDocument = ReturnDocument.After
@@ -35,10 +35,5 @@ public class MongoUserRepository : IUserRepository
     updatedUser.UpdatedAt = DateTime.UtcNow;
 
     return await _context.Users.FindOneAndReplaceAsync(filter, updatedUser, options);
-  }
-
-  public async Task<User?> GetByResetToken(string token)
-  {
-    return await _context.Users.Find(u => u.PasswordResetToken == token).FirstOrDefaultAsync();
   }
 }
