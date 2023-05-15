@@ -36,6 +36,7 @@ public class TokenService
 
   public async Task VerifyRefreshToken(string? token, Claim? userId)
   {
+    // TODO: throw custom refresh token exception
     if (token == null)
     {
       // throw invalid refresh token exception

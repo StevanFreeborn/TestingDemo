@@ -61,6 +61,7 @@ public class AuthController : ControllerBase
     var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.NameId);
     var refreshToken = Request.Cookies[RefreshTokenName];
     await _tokenService.VerifyRefreshToken(refreshToken, userId);
+    // TODO: Finish logic
     return Ok();
   }
 
