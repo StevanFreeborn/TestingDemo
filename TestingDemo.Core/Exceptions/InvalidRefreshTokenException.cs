@@ -1,12 +1,12 @@
 namespace TestingDemo.Core.Exceptions;
 
-public class InvalidRefreshToken : Exception
+public class InvalidRefreshTokenException : Exception
 {
-  public InvalidRefreshToken() : base("Refresh token is invalid")
+  public InvalidRefreshTokenException() : base("Refresh token is invalid")
   {
   }
 
-  public InvalidRefreshToken(Exception innerException) : base("Refresh token token is invalid", innerException)
+  public InvalidRefreshTokenException(Exception innerException) : base("Refresh token token is invalid", innerException)
   {
   }
 }

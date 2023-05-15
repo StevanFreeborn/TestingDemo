@@ -34,29 +34,32 @@ public class TokenService
     return await _tokenRepository.CreateTokenAsync(authToken);
   }
 
-  public async Task VerifyRefreshToken(string? token, Claim? userId)
+  public async Task<AuthToken> VerifyAndGetRefreshToken(string? token, string userId)
   {
     if (token == null)
     {
-      throw new InvalidRefreshToken();
+      throw new InvalidRefreshTokenException();
     }
+
     var refreshToken = await _tokenRepository.GetToken(token, AuthTokenType.RefreshToken);
 
     if (refreshToken == null || userId == null)
     {
-      throw new InvalidRefreshToken();
+      throw new InvalidRefreshTokenException();
     }
 
-    if (refreshToken.Revoked == true || refreshToken.UserId != userId.Value)
+    if (refreshToken.Revoked == true || refreshToken.UserId != userId)
     {
       await _tokenRepository.RevokeAllRefreshTokensForUser(refreshToken.UserId);
-      throw new InvalidRefreshToken();
+      throw new InvalidRefreshTokenException();
     }
 
     if (refreshToken.ExpiresAt < DateTime.UtcNow)
     {
-      throw new InvalidRefreshToken();
+      throw new InvalidRefreshTokenException();
     }
+
+    return refreshToken;
   }
 
   public async Task<AuthToken> GetPasswordResetToken(string token)

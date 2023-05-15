@@ -51,12 +51,13 @@ public class AuthController : ControllerBase
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> RefreshToken()
   {
-    var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.NameId);
+    var userId = HttpContext.User.Identity!.Name!;
     var refreshToken = Request.Cookies[RefreshTokenName];
-    await _tokenService.VerifyRefreshToken(refreshToken, userId);
-    await _tokenService.RemoveExpiredAndRevokedRefreshTokensForUser(userId!.Value);
+    var authRefreshToken = await _tokenService.VerifyAndGetRefreshToken(refreshToken, userId);
+    await _tokenService.RevokeToken(authRefreshToken);
+    await _tokenService.RemoveExpiredAndRevokedRefreshTokensForUser(userId);
 
-    var user = await _userService.GetUserByIdAsync(userId.Value);
+    var user = await _userService.GetUserByIdAsync(userId);
     var authUser = GetAuthUserResponse(user);
 
     var newRefreshToken = await _tokenService.CreateRefreshTokenForUser(user);
@@ -121,8 +122,8 @@ public class AuthController : ControllerBase
     var claims = new List<Claim>
     {
       new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-      new (JwtRegisteredClaimNames.NameId, user.Id),
-      new (JwtRegisteredClaimNames.UniqueName, user.Username),
+      new (JwtRegisteredClaimNames.UniqueName, user.Id),
+      new (JwtRegisteredClaimNames.NameId, user.Username),
       new (JwtRegisteredClaimNames.Email, user.Email),
     };
 
