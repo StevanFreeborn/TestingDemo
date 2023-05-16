@@ -9,16 +9,16 @@ public class AuthController : ControllerBase
   private const string RefreshTokenName = "refreshToken";
   private readonly IMapper _mapper;
   private readonly JwtTokenSettings _jwtTokenSettings;
-  private readonly UserService _userService;
-  private readonly EmailService _emailService;
-  private readonly TokenService _tokenService;
+  private readonly IUserService _userService;
+  private readonly IEmailService _emailService;
+  private readonly ITokenService _tokenService;
 
   public AuthController(
     IMapper mapper,
     JwtTokenSettings jwtTokenSettings,
-    UserService userService,
-    EmailService emailService,
-    TokenService tokenService
+    IUserService userService,
+    IEmailService emailService,
+    ITokenService tokenService
   )
   {
     _mapper = mapper;
