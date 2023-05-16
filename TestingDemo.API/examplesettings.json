@@ -5,9 +5,19 @@
       "Microsoft.AspNetCore": "Warning"
     }
   },
-  "AllowedHosts": "*",
   "MongoDbSettings": {
     "ConnectionString": "ConnectionString",
     "DatabaseName": "DatabaseName"
+  },
+  "Email": {
+    "SystemEmailAddress": "SystemEmailAddress"
+  },
+  "SendGrid": {
+    "ApiKey": "SendGridApiKey"
+  },
+  "JWT": {
+    "Key": "Key",
+    "Audience": "Audience",
+    "Issuer": "Issuer"
   }
 }
