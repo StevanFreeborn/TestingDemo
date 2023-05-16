@@ -1,5 +1,6 @@
 namespace TestingDemo.API.Controllers.V1;
 
+[Authorize]
 [ApiController]
 [ApiVersion("1.0")]
 [Route("/api/users")]
