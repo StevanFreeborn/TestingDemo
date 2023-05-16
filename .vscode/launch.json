@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/TestingDemo.API/bin/Debug/net7.0/TestingDemo.API.dll",
+      "program": "${workspaceFolder}/src/TestingDemo.API/bin/Debug/net7.0/TestingDemo.API.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/TestingDemo.API",
+      "cwd": "${workspaceFolder}/src/TestingDemo.API",
       "stopAtEntry": false,
       "serverReadyAction": {
         "action": "openExternally",
