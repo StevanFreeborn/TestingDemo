@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingDemo.API", "TestingDemo.API\TestingDemo.API.csproj", "{6ECBE01D-0DAF-4639-B2EF-4F2AE913641E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingDemo.API", "src\TestingDemo.API\TestingDemo.API.csproj", "{6ECBE01D-0DAF-4639-B2EF-4F2AE913641E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingDemo.Core", "TestingDemo.Core\TestingDemo.Core.csproj", "{9071C6B5-B68F-4478-9FFA-EA2B7FBE65CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingDemo.Core", "src\TestingDemo.Core\TestingDemo.Core.csproj", "{9071C6B5-B68F-4478-9FFA-EA2B7FBE65CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingDemo.Infrastructure", "TestingDemo.Infrastructure\TestingDemo.Infrastructure.csproj", "{909EFA8B-0CEA-4BB7-B2CC-09CE33AC9128}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingDemo.Tests", "TestingDemo.Tests\TestingDemo.Tests.csproj", "{2FBEC67E-C305-4866-9866-4ECE5C4601B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingDemo.Infrastructure", "src\TestingDemo.Infrastructure\TestingDemo.Infrastructure.csproj", "{909EFA8B-0CEA-4BB7-B2CC-09CE33AC9128}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
