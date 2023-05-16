@@ -1,6 +1,6 @@
 namespace TestingDemo.Core.Services;
 
-public class EmailService
+public class EmailService : IEmailService
 {
   private readonly IEmailProvider _client;
   private readonly EmailSettings _settings;

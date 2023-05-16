@@ -1,6 +1,6 @@
 namespace TestingDemo.Core.Services;
 
-public class TokenService
+public class TokenService : ITokenService
 {
   private readonly ITokenRepository _tokenRepository;
 
