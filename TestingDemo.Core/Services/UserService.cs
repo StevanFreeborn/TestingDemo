@@ -12,7 +12,7 @@ public class UserService
   {
     var user = await _userRepository.GetByIdAsync(id);
 
-    if (user == null)
+    if (user is null)
     {
       throw new ModelNotFoundException($"No user with id {id} found");
     }
@@ -24,14 +24,14 @@ public class UserService
   {
     var user = await _userRepository.GetByUsernameAsync(username);
 
-    if (user == null)
+    if (user is null)
     {
       throw new InvalidLoginException();
     }
 
     var isCorrectPassword = Authenticator.VerifyPassword(password, user.Password, user.Salt);
 
-    if (isCorrectPassword == false)
+    if (isCorrectPassword is false)
     {
       throw new InvalidLoginException();
     }
@@ -62,7 +62,7 @@ public class UserService
   {
     var user = await _userRepository.GetByUsernameAsync(username);
 
-    if (user == null)
+    if (user is null)
     {
       throw new ModelNotFoundException($"No user with username {username} found");
     }

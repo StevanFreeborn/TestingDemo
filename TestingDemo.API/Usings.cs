@@ -17,9 +17,12 @@ global using Microsoft.OpenApi.Models;
 
 global using MongoDB.Bson;
 
+global using Swashbuckle.AspNetCore.SwaggerGen;
+
 global using TestingDemo.API.Dtos;
 global using TestingDemo.API.Dtos.Auth;
 global using TestingDemo.API.Dtos.Users;
+global using TestingDemo.API.Filters;
 global using TestingDemo.API.Middleware;
 global using TestingDemo.API.Validation;
 global using TestingDemo.Core.Exceptions;
