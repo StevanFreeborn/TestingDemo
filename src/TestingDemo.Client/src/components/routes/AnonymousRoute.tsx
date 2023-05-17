@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import PublicLayout from '../layouts/PublicLayout';
 
 export default function AnonymousRoute({
   children,
@@ -11,5 +12,5 @@ export default function AnonymousRoute({
     return <Navigate to="/" replace />;
   }
 
-  return children ? children : <Outlet />;
+  return <PublicLayout>{children ? children : <Outlet />}</PublicLayout>;
 }

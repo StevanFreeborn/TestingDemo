@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 380px;
+  height: 520px;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, .35);
+  background: linear-gradient(-180deg, rgba(16, 49, 116, .8) 30%, rgba(74, 135, 227, .8) 46%, rgba(61, 88, 141, .8) 93%);
+  border-radius: 3px;
+  border: 1px solid #acb0bb;
+}
+
+.innerContainer {
+  height: 100%;
+  padding: 30px 20px 20px 20px;
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  padding: 20px 20px 30px 20px;
+}
+
+.copyRightContainer {
+  text-align: center;
+  color: #d4d4d4;
+  font-size: 11px;
+  letter-spacing: normal;
+  font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
+}
