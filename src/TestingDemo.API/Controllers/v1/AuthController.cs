@@ -142,6 +142,7 @@ public class AuthController : ControllerBase
 
     authUser.Token = jwtToken;
     authUser.ExpiresIn = (int) jwtExpiration.Subtract(DateTime.UtcNow).TotalMilliseconds;
+    authUser.Expiration = jwtExpiration;
 
     return authUser;
   }

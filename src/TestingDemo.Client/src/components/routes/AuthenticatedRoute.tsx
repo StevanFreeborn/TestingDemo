@@ -1,13 +1,14 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { useUserContext } from '../../context/UserContext.js';
 
 export default function AuthenticatedRoute({
   children,
 }: {
   children?: JSX.Element;
 }): JSX.Element {
-  const userAuth = localStorage.getItem('user');
+  const { state } = useUserContext();
 
-  if (userAuth === null) {
+  if (state === null) {
     return <Navigate to="/Public/Login" replace />;
   }
 

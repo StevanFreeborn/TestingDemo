@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { useUserContext } from '../../context/UserContext';
 import PublicLayout from '../layouts/PublicLayout';
 
 export default function AnonymousRoute({
@@ -6,9 +7,9 @@ export default function AnonymousRoute({
 }: {
   children?: JSX.Element;
 }): JSX.Element {
-  const userAuth = localStorage.getItem('user');
+  const { state } = useUserContext();
 
-  if (userAuth !== null) {
+  if (state !== null) {
     return <Navigate to="/" replace />;
   }
 
