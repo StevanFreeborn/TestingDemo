@@ -2,14 +2,14 @@ import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 const USER_KEY = 'testingDemoAuth';
 
-enum UserActions {
+export enum UserActions {
   LOGIN,
   LOGOUT,
 }
 
 type UserAction = {
   type: UserActions;
-  payload: object;
+  payload?: object;
 };
 
 type UserContextType = {
@@ -37,7 +37,11 @@ function userReducer(
   action: UserAction
 ): AuthUser | null {
   switch (action.type) {
+    case UserActions.LOGIN:
+      localStorage.setItem(USER_KEY, JSON.stringify(action.payload));
+      return action.payload as AuthUser;
     default:
+      localStorage.removeItem(USER_KEY);
       return null;
   }
 }

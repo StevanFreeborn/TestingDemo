@@ -1,11 +1,13 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { UserActions, useUserContext } from '../context/UserContext';
 import { AuthInput } from './AuthInput';
 import styles from './LoginForm.module.css';
 import AccountIcon from './icons/AccountIcon';
 import LockIcon from './icons/LockIcon';
 
 export default function LoginForm() {
+  const { dispatch } = useUserContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -17,8 +19,20 @@ export default function LoginForm() {
     setPassword(e.target.value);
   }
 
+  function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    dispatch({
+      type: UserActions.LOGIN,
+      payload: {
+        expiration: new Date(),
+        expiresIn: 1000,
+        user: { id: 'test', username: 'test', email: 'test@test.com' },
+      },
+    });
+  }
+
   return (
-    <form>
+    <form onSubmit={handleFormSubmit}>
       <AuthInput
         Icon={AccountIcon}
         type="text"

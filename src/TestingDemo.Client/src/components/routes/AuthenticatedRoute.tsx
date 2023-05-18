@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useUserContext } from '../../context/UserContext.js';
+import { useUserContext } from '../../context/UserContext';
 
 export default function AuthenticatedRoute({
   children,
