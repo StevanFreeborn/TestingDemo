@@ -25,7 +25,7 @@ root.render(
               index
               element={<Navigate to="/Public/Login" replace />}
             ></Route>
-            <Route path="/Public/Login" element={<LoginPage />} />
+            <Route path="Login" element={<LoginPage />} />
           </Route>
           <Route path="*" element={<ErrorPage />} />
         </Route>

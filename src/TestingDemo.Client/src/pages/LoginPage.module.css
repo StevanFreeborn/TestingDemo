@@ -12,6 +12,8 @@
 .innerContainer {
   height: 100%;
   padding: 30px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .logoContainer {
@@ -20,7 +22,92 @@
   padding: 20px 20px 30px 20px;
 }
 
+.logoContainer img {
+  width: 240px;
+  height: 72px;
+}
+
+.formGroup {
+  display: flex;
+  width: 100%;
+  border: 1px solid #acb0bb;
+  background-color: #ffffff;
+  height: 30px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+}
+
+.formGroup input {
+  height: 30px;
+  width: 100%;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border: none;
+  padding: 1px 1px 1px 10px;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  letter-spacing: .25px;
+  color: #555;
+}
+
+.formGroup input::placeholder {
+  font-style: italic;
+  color: #cacaca;
+}
+
+.formGroup input:focus-visible {
+  outline: none;
+}
+
+.iconContainer {
+  background-color: #f4f5f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-right: 1px solid #acb0bb;
+}
+
+.icon {
+  width: 20px;
+  color: #7f7f7f;
+  fill: #7f7f7f;
+}
+
+.forgotPasswordLink {
+  color: #fff;
+  text-decoration: none;
+  font-size: 11px;
+}
+
+.actionsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgotPasswordLink:hover {
+  text-decoration: underline;
+}
+
+.loginButton {
+  border: 0;
+  background: #f7941d;
+  color: #fff;
+  padding: 7.5px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background-color: #df8419;
+}
+
 .copyRightContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex: 1;
   text-align: center;
   color: #d4d4d4;
   font-size: 11px;
