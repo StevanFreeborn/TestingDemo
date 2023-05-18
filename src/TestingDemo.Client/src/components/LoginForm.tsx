@@ -1,23 +1,14 @@
 import { Link } from 'react-router-dom';
-import { ReactComponent as AccountIcon } from '../assets/images/icons/account.svg';
-import { ReactComponent as LockIcon } from '../assets/images/icons/lock.svg';
+import { AuthInput } from './AuthInput';
 import styles from './LoginForm.module.css';
+import AccountIcon from './icons/AccountIcon';
+import LockIcon from './icons/LockIcon';
 
 export default function LoginForm() {
   return (
     <form>
-      <div className={styles.formGroup}>
-        <div className={styles.iconContainer}>
-          <AccountIcon className={styles.icon} />
-        </div>
-        <input type="text" placeholder="Username" />
-      </div>
-      <div className={styles.formGroup}>
-        <div className={styles.iconContainer}>
-          <LockIcon className={styles.icon} />
-        </div>
-        <input type="password" placeholder="Password" />
-      </div>
+      <AuthInput Icon={AccountIcon} type="text" placeholder="Username" />
+      <AuthInput Icon={LockIcon} type="password" placeholder="Password" />
       <div className={styles.actionsContainer}>
         <Link className={styles.forgotPasswordLink} to="/Public/ForgotPassword">
           Forgot Password?
