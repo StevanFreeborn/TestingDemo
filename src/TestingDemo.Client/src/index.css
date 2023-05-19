@@ -4,6 +4,8 @@
   box-sizing: border-box;
   font-family: Roboto, Arial, Helvetica, sans-serif;
   letter-spacing: .25px;
+  font-size: 13px;
+  line-height: 1.1;
 }
 
 html,

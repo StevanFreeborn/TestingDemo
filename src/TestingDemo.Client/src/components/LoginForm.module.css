@@ -26,3 +26,16 @@
 .loginButton:hover {
   background-color: #df8419;
 }
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  color: #e74c3c;
+  background-color: #ffffffd9;
+  font-weight: 700;
+  margin: 1em -20px;
+  padding: 10px 5px;
+}

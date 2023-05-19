@@ -38,11 +38,12 @@ export function useAuthService() {
 
     const data = await response.json();
 
+    if (response.status === 400) {
+      throw new LoginError('Username/Password combination is not valid', data);
+    }
+
     if (response.ok === false) {
-      throw new LoginError('Unable to log user in', {
-        request: loginRequest,
-        response: data,
-      });
+      throw new LoginError('Unable to log in', data);
     }
 
     return data;

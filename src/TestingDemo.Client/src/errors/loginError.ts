@@ -1,9 +1,9 @@
 export class LoginError extends Error {
-  data: object;
+  response: any;
 
-  constructor(message: string, data: object) {
+  constructor(message: string, response: any) {
     super(message);
     this.name = 'LoginError';
-    this.data = data;
+    this.response = response;
   }
 }
