@@ -8,6 +8,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAndConfigureAPIVersioning();
 builder.Services.AddAndConfigureSwaggerGen();
 builder.AddAndConfigureJWTAuth();
+builder.Services.AddCors(
+  options => options.AddPolicy(
+    "development",
+    policy => policy
+    .AllowCredentials()
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .WithOrigins("http://localhost:5001")
+  )
+);
 
 var app = builder.Build();
 app.UseMiddleware<ErrorHandling>();
@@ -16,6 +26,7 @@ if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();
   app.UseSwaggerUI();
+  app.UseCors("development");
 }
 
 app.UseHttpsRedirection();

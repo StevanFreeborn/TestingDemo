@@ -123,8 +123,9 @@ public class AuthController : ControllerBase
       cookieValue,
       new CookieOptions
       {
+        Secure = true,
         HttpOnly = true,
-        SameSite = SameSiteMode.Strict,
+        SameSite = SameSiteMode.None,
         Expires = cookieExpiration,
       }
     );
