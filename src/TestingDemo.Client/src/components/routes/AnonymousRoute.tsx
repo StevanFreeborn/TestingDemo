@@ -7,9 +7,9 @@ export default function AnonymousRoute({
 }: {
   children?: JSX.Element;
 }): JSX.Element {
-  const { state } = useUserContext();
+  const { userState } = useUserContext();
 
-  if (state !== null) {
+  if (userState !== null) {
     return <Navigate to="/" replace />;
   }
 

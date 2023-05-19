@@ -6,9 +6,9 @@ export default function AuthenticatedRoute({
 }: {
   children?: JSX.Element;
 }): JSX.Element {
-  const { state } = useUserContext();
+  const { userState } = useUserContext();
 
-  if (state === null) {
+  if (userState === null) {
     return <Navigate to="/Public/Login" replace />;
   }
 

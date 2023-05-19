@@ -18,7 +18,8 @@
   "JWT": {
     "Key": "Key",
     "Audience": "Audience",
-    "Issuer": "Issuer"
+    "Issuer": "Issuer",
+    "TokenLifetimeMinutes": 0
   },
   "Kestrel": {
     "Endpoints": {

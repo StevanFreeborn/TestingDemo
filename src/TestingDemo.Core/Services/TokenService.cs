@@ -27,7 +27,7 @@ public class TokenService : ITokenService
     {
       UserId = user.Id,
       Token = GenerateToken(),
-      ExpiresAt = DateTime.UtcNow.AddDays(7),
+      ExpiresAt = DateTime.UtcNow.AddHours(12),
       TokenType = AuthTokenType.RefreshToken,
     };
 

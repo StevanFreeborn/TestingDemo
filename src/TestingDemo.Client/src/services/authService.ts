@@ -9,20 +9,20 @@ type LoginRequest = {
 
 export function useAuthService() {
   const baseUrl = process.env.REACT_APP_API_URL;
-  const { dispatch } = useUserContext();
+  const { dispatchUserAction } = useUserContext();
   const client = useClient();
 
   async function refreshToken() {
-    const response = await client.get(`${baseUrl}/api/auth/refresh-token`);
+    const response = await client.post(`${baseUrl}/api/auth/refresh-token`);
 
     if (response.ok === false) {
-      dispatch({ type: UserActions.LOGOUT });
+      dispatchUserAction({ type: UserActions.LOGOUT });
       return;
     }
 
     const payload = await response.json();
 
-    dispatch({ type: UserActions.LOGIN, payload });
+    dispatchUserAction({ type: UserActions.LOGIN, payload });
   }
 
   async function logUserIn(loginRequest: LoginRequest) {

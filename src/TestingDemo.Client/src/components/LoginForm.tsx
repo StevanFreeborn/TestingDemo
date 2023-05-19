@@ -8,7 +8,7 @@ import AccountIcon from './icons/AccountIcon';
 import LockIcon from './icons/LockIcon';
 
 export default function LoginForm() {
-  const { dispatch } = useUserContext();
+  const { dispatchUserAction } = useUserContext();
   const { logUserIn } = useAuthService();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -26,7 +26,7 @@ export default function LoginForm() {
     e.preventDefault();
     try {
       const authUser = await logUserIn({ username, password });
-      dispatch({
+      dispatchUserAction({
         type: UserActions.LOGIN,
         payload: authUser,
       });

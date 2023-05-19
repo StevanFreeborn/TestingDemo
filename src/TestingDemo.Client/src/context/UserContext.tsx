@@ -13,8 +13,8 @@ type UserAction = {
 };
 
 type UserContextType = {
-  state: AuthUser | null;
-  dispatch: React.Dispatch<UserAction>;
+  userState: AuthUser | null;
+  dispatchUserAction: React.Dispatch<UserAction>;
 };
 
 type User = {
@@ -24,7 +24,7 @@ type User = {
 };
 
 type AuthUser = {
-  expiration: Date;
+  expiration: string;
   expiresIn: number;
   token: string;
   user: User;
@@ -68,10 +68,10 @@ export function useUserContext() {
 
 export function UserContextProvider({ children }: { children: ReactNode }) {
   const initialState = createInitialState();
-  const [state, dispatch] = useReducer(userReducer, initialState);
+  const [userState, dispatchUserAction] = useReducer(userReducer, initialState);
 
   return (
-    <UserContext.Provider value={{ state, dispatch }}>
+    <UserContext.Provider value={{ userState, dispatchUserAction }}>
       {children}
     </UserContext.Provider>
   );

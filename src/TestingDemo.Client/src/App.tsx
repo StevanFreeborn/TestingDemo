@@ -2,34 +2,33 @@ import { MouseEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserActions, useUserContext } from './context/UserContext';
 import { useAuthService } from './services/authService';
-import { useClient } from './services/httpClient';
 
 function App() {
-  const { state, dispatch } = useUserContext();
+  const { userState, dispatchUserAction } = useUserContext();
   const { refreshToken } = useAuthService();
-  const client = useClient();
-
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (state === null) {
+    if (userState === null) {
       return;
     }
-    const interval = setInterval(refreshToken, state.expiresIn - 60 * 1000);
+
+    const oneMinuteInMs = 60 * 1000;
+    const refreshInterval = userState.expiresIn - oneMinuteInMs;
+    const expirationDate = new Date(userState.expiration);
+    const timeDiffInMs = expirationDate.getTime() - Date.now();
+
+    if (timeDiffInMs < refreshInterval) {
+      refreshToken();
+    }
+
+    const interval = setInterval(refreshToken, refreshInterval);
     return () => clearInterval(interval);
-  }, [refreshToken, state]);
+  }, [refreshToken, userState]);
 
   function handleLogOutClick(e: MouseEvent<HTMLButtonElement>) {
-    dispatch({ type: UserActions.LOGOUT });
+    dispatchUserAction({ type: UserActions.LOGOUT });
     navigate('/Public/Login');
-  }
-
-  async function makeRequest() {
-    const res = await client.get(
-      'https://localhost:5000/api/auth/reset-password'
-    );
-
-    console.log(res);
   }
 
   return (
@@ -37,9 +36,6 @@ function App() {
       <h1>Hello World</h1>
       <button type="button" onClick={handleLogOutClick}>
         Log Out
-      </button>
-      <button type="button" onClick={() => makeRequest()}>
-        Make Request
       </button>
     </div>
   );

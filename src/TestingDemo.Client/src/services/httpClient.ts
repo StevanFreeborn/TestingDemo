@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { UserActions, useUserContext } from '../context/UserContext';
 
 export function useClient() {
-  const { state, dispatch } = useUserContext();
+  const { userState, dispatchUserAction } = useUserContext();
   const navigate = useNavigate();
 
   function getAuthHeader(url: string): HeadersInit | undefined {
-    const token = state?.token;
+    const token = userState?.token;
     const apiUrl = process.env.API_URL;
 
     if (
@@ -29,13 +29,11 @@ export function useClient() {
       credentials: 'include' as RequestCredentials,
     };
 
-    console.log(requestConfig.headers);
-
     const request = new Request(url, requestConfig);
     const response = await fetch(request);
 
     if (response.status === 401) {
-      dispatch({ type: UserActions.LOGOUT });
+      dispatchUserAction({ type: UserActions.LOGOUT });
       navigate('/Public/Login');
     }
 
@@ -49,7 +47,7 @@ export function useClient() {
 
   async function post<T>(
     url: string,
-    body: T,
+    body?: T,
     config?: RequestInit
   ): Promise<Response> {
     const init = { ...config, method: 'POST', body: JSON.stringify(body) };
