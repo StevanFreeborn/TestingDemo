@@ -40,9 +40,11 @@ function userReducer(
     case UserActions.LOGIN:
       localStorage.setItem(USER_KEY, JSON.stringify(action.payload));
       return action.payload as AuthUser;
-    default:
+    case UserActions.LOGOUT:
       localStorage.removeItem(USER_KEY);
       return null;
+    default:
+      return state;
   }
 }
 
