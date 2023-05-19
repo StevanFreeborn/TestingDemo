@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserActions, useUserContext } from '../context/UserContext';
+import { useAuthService } from '../services/authService';
 import { AuthInput } from './AuthInput';
 import styles from './LoginForm.module.css';
 import AccountIcon from './icons/AccountIcon';
@@ -8,6 +9,8 @@ import LockIcon from './icons/LockIcon';
 
 export default function LoginForm() {
   const { dispatch } = useUserContext();
+  const { logUserIn } = useAuthService();
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -19,16 +22,18 @@ export default function LoginForm() {
     setPassword(e.target.value);
   }
 
-  function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dispatch({
-      type: UserActions.LOGIN,
-      payload: {
-        expiration: new Date(),
-        expiresIn: 1000,
-        user: { id: 'test', username: 'test', email: 'test@test.com' },
-      },
-    });
+    try {
+      const authUser = await logUserIn({ username, password });
+      dispatch({
+        type: UserActions.LOGIN,
+        payload: authUser,
+      });
+      navigate('/');
+    } catch (error) {
+      console.log({ error });
+    }
   }
 
   return (

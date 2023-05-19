@@ -1,11 +1,20 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './App.css';
 import { UserActions, useUserContext } from './context/UserContext';
+import { useAuthService } from './services/authService';
 
 function App() {
-  const { dispatch } = useUserContext();
+  const { state, dispatch } = useUserContext();
+  const { refreshToken } = useAuthService();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (state === null) {
+      return;
+    }
+    const interval = setInterval(refreshToken, state.expiresIn - 60 * 1000);
+    return () => clearInterval(interval);
+  }, [refreshToken, state]);
 
   function handleLogOutClick(e: MouseEvent<HTMLButtonElement>) {
     dispatch({ type: UserActions.LOGOUT });
