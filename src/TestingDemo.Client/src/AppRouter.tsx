@@ -3,6 +3,7 @@ import App from './App';
 import AnonymousRoute from './components/routes/AnonymousRoute';
 import AuthenticatedRoute from './components/routes/AuthenticatedRoute';
 import ErrorPage from './pages/ErrorPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import LoginPage from './pages/LoginPage';
 
 export default function AppRouter() {
@@ -12,16 +13,17 @@ export default function AppRouter() {
         <Route element={<AuthenticatedRoute />}>
           <Route path="/" element={<App />} />
         </Route>
-        <Route element={<AnonymousRoute />}>
-          <Route path="/Public">
+        <Route path="/Public">
+          <Route element={<AnonymousRoute />}>
             <Route
               index
               element={<Navigate to="/Public/Login" replace />}
             ></Route>
             <Route path="Login" element={<LoginPage />} />
           </Route>
-          <Route path="*" element={<ErrorPage />} />
+          <Route path="ForgotPassword" element={<ForgotPasswordPage />} />
         </Route>
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
   );
