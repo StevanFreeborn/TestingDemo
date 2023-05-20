@@ -1,31 +1,58 @@
-import { render, screen } from '@testing-library/react';
 import App from '../src/App';
-import {
-  UserContextProvider,
-  useUserContext,
-} from '../src/context/UserContext';
+import * as UserContext from '../src/context/UserContext';
+import * as AuthService from '../src/services/authService';
+import { render } from './utils/testUtils';
+jest.useFakeTimers();
 
-jest.mock('react-router-dom', () => ({
-  useNavigate: jest.fn(),
-}));
+describe('App', () => {
+  const useUserContextSpy = jest.spyOn(UserContext, 'useUserContext');
+  const useAuthServiceSpy = jest.spyOn(AuthService, 'useAuthService');
+  const setIntervalSpy = jest.spyOn(global, 'setInterval');
 
-jest.mock('../src/context/UserContext', () => ({
-  ...jest.requireActual('../src/context/UserContext'),
-  useUserContext: jest.fn(() => ({
-    userState: null,
-    dispatchUserAction: jest.fn(),
-  })),
-}));
+  beforeEach(() => {
+    useUserContextSpy.mockClear();
+  });
 
-const mockedUseUserContext = jest.mocked(useUserContext);
+  it('should not call refreshToken when userState is null', () => {
+    useUserContextSpy.mockReturnValue({
+      userState: null,
+      dispatchUserAction: jest.fn(),
+    });
+    render(<App />);
+    expect(useAuthServiceSpy).toBeCalledTimes(0);
+  });
 
-it('renders learn react link', () => {
-  render(
-    <UserContextProvider>
-      <App />
-    </UserContextProvider>
-  );
-  const helloWorldHeading = screen.getByText(/Hello World/i);
-  expect(helloWorldHeading).toBeInTheDocument();
-  expect(mockedUseUserContext).toBeCalled();
+  it('should not call setInterval when userState is null', () => {
+    useUserContextSpy.mockReturnValue({
+      userState: null,
+      dispatchUserAction: jest.fn(),
+    });
+    render(<App />);
+    expect(setIntervalSpy).toBeCalledTimes(0);
+  });
+
+  it('should call setInterval when userState is not null', () => {
+    const refreshTokenMock = jest.fn();
+
+    useAuthServiceSpy.mockReturnValue({
+      refreshToken: refreshTokenMock,
+      logUserIn: jest.fn(),
+    });
+
+    useUserContextSpy.mockReturnValue({
+      userState: {
+        expiration: new Date().toISOString(),
+        expiresIn: 0,
+        token: 'token',
+        user: {
+          id: 'id',
+          username: 'username',
+          email: 'email',
+        },
+      },
+      dispatchUserAction: jest.fn(),
+    });
+    render(<App />);
+    expect(refreshTokenMock).toBeCalledTimes(0);
+  });
 });
