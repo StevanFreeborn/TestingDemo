@@ -21,7 +21,9 @@ public class MongoUserRepository : IUserRepository
 
   public async Task<User?> GetByUsernameAsync(string username)
   {
-    return await _context.Users.Find(u => u.Username == username).FirstOrDefaultAsync();
+    return await _context.Users.Find(
+      u => u.Username.ToLower() == username.ToLower()
+    ).FirstOrDefaultAsync();
   }
 
   public async Task<User?> UpdateUserAsync(User updatedUser)
