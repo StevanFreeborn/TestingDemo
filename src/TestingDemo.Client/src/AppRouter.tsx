@@ -6,6 +6,7 @@ import PublicRoute from './components/routes/PublicRoute';
 import ErrorPage from './pages/ErrorPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import LoginPage from './pages/LoginPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 export default function AppRouter() {
   return (
@@ -24,6 +25,7 @@ export default function AppRouter() {
           </Route>
           <Route element={<PublicRoute />}>
             <Route path="ForgotPassword" element={<ForgotPasswordPage />} />
+            <Route path="ResetPassword" element={<ResetPasswordPage />} />
           </Route>
         </Route>
         <Route path="*" element={<ErrorPage />} />

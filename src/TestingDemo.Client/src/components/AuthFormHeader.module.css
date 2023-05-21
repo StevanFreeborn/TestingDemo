@@ -1,0 +1,10 @@
+.headerContainer>h2 {
+  color: #000000;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.blueRuler {
+  margin: 13px -15px;
+  border-top: 2px solid #4a87e3;
+}

@@ -1,27 +1,14 @@
-import { ChangeEvent, FormEvent, ReactNode, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { fetchClient } from '../http/fetchClient';
 import { authService } from '../services/authService';
 import { isNullEmptyOrWhitespace } from '../utils/stringUtils';
+import AuthFormContainer from './AuthFormContainer';
 import AuthFormErrorContainer from './AuthFormErrorContainer';
+import AuthFormHeader from './AuthFormHeader';
 import { AuthInput } from './AuthInput';
 import styles from './ForgotPasswordForm.module.css';
 import AccountIcon from './icons/AccountIcon';
 import InfoIcon from './icons/InfoIcon';
-
-function ForgotPasswordFormContainer({ children }: { children: ReactNode }) {
-  return <div className={styles.forgotPasswordContainer}>{children}</div>;
-}
-
-function FormHeader({ header }: { header: string }) {
-  return (
-    <>
-      <div className={styles.headerContainer}>
-        <h2>{header}</h2>
-      </div>
-      <hr className={styles.blueRuler} />
-    </>
-  );
-}
 
 function Form({
   submitHandler,
@@ -34,7 +21,7 @@ function Form({
 }) {
   return (
     <form onSubmit={submitHandler}>
-      <FormHeader header="Forgot Password" />
+      <AuthFormHeader header="Forgot Password" />
       <div className={styles.infoContainer}>
         <div className={styles.infoItem}>
           <InfoIcon className={styles.icon} />
@@ -72,7 +59,7 @@ function Form({
 function FormSubmissionConfirmation() {
   return (
     <>
-      <FormHeader header="Reset Password" />
+      <AuthFormHeader header="Reset Password" />
       <div className={styles.confirmationText}>
         <p>
           If your account is active, a message will be sent to your email
@@ -118,7 +105,7 @@ export default function ForgotPasswordForm() {
 
   return (
     <>
-      <ForgotPasswordFormContainer>
+      <AuthFormContainer>
         {submitted ? (
           <FormSubmissionConfirmation />
         ) : (
@@ -128,7 +115,7 @@ export default function ForgotPasswordForm() {
             userNameChangeHandler={handleUsernameChange}
           />
         )}
-      </ForgotPasswordFormContainer>
+      </AuthFormContainer>
       <AuthFormErrorContainer errors={errors} />
     </>
   );
