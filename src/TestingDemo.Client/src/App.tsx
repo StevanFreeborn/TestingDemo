@@ -1,34 +1,22 @@
-import { MouseEvent, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserActions, useUserContext } from './context/UserContext';
-import { useAuthService } from './services/authService';
+import { MouseEvent, useState } from 'react';
+import { useFetchClient } from './hooks/useFetchClient';
+import { useUserContext } from './hooks/useUserContext';
 
 function App() {
-  const { userState, dispatchUserAction } = useUserContext();
-  const { refreshToken } = useAuthService();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (userState === null) {
-      return;
-    }
-
-    const oneMinuteInMs = 60 * 1000;
-    const refreshInterval = userState.expiresIn - oneMinuteInMs;
-    const expirationDate = new Date(userState.expiration);
-    const timeDiffInMs = expirationDate.getTime() - Date.now();
-
-    if (timeDiffInMs < refreshInterval) {
-      refreshToken();
-    }
-
-    const interval = setInterval(refreshToken, refreshInterval);
-    return () => clearInterval(interval);
-  }, [refreshToken, userState]);
+  const [user, setUser] = useState(undefined);
+  const { userState, logOut } = useUserContext();
+  const client = useFetchClient();
 
   function handleLogOutClick(e: MouseEvent<HTMLButtonElement>) {
-    dispatchUserAction({ type: UserActions.LOGOUT });
-    navigate('/Public/Login');
+    logOut();
+  }
+
+  async function handleMakeRequestClick(e: MouseEvent<HTMLButtonElement>) {
+    const res = await client.get(
+      `https://localhost:5000/api/users/${userState?.user.id}`
+    );
+    const data = await res.json();
+    setUser(data);
   }
 
   return (
@@ -37,6 +25,10 @@ function App() {
       <button type="button" onClick={handleLogOutClick}>
         Log Out
       </button>
+      <button type="button" onClick={handleMakeRequestClick}>
+        Make Authorized Request
+      </button>
+      <div>{JSON.stringify(user)}</div>
     </div>
   );
 }

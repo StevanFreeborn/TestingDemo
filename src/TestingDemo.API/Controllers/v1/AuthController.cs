@@ -51,31 +51,27 @@ public class AuthController : ControllerBase
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> LogOut()
   {
-    var userId = GetUserIdFromContext(HttpContext)!;
     var refreshToken = GetRefreshTokenFromRequest(Request);
-    var authToken = await _tokenService.VerifyAndGetRefreshToken(refreshToken, userId);
+    var authToken = await _tokenService.VerifyAndGetRefreshToken(refreshToken);
     await _tokenService.RevokeToken(authToken);
-    await _tokenService.RemoveExpiredAndRevokedRefreshTokensForUser(userId);
+    await _tokenService.RemoveExpiredAndRevokedRefreshTokensForUser(authToken.UserId);
     SetRefreshCookie(Response, string.Empty, DateTime.MinValue);
     return Ok();
   }
 
-  [Authorize]
   [MapToApiVersion("1.0")]
   [HttpPost("refresh-token")]
   [ProducesResponseType(typeof(AuthUserDto), StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> RefreshToken()
   {
-    var userId = GetUserIdFromContext(HttpContext)!;
     var refreshToken = GetRefreshTokenFromRequest(Request);
-    var authRefreshToken = await _tokenService.VerifyAndGetRefreshToken(refreshToken, userId);
+    var authRefreshToken = await _tokenService.VerifyAndGetRefreshToken(refreshToken);
     await _tokenService.RevokeToken(authRefreshToken);
-    await _tokenService.RemoveExpiredAndRevokedRefreshTokensForUser(userId);
+    await _tokenService.RemoveExpiredAndRevokedRefreshTokensForUser(authRefreshToken.UserId);
 
-    var user = await _userService.GetUserByIdAsync(userId);
+    var user = await _userService.GetUserByIdAsync(authRefreshToken.UserId);
     var authUser = GetAuthUserResponse(user);
 
     var newRefreshToken = await _tokenService.CreateRefreshTokenForUser(user);
@@ -131,11 +127,6 @@ public class AuthController : ControllerBase
     );
   }
 
-  private static string? GetUserIdFromContext(HttpContext context)
-  {
-    return context.User.Identity?.Name;
-  }
-
   private AuthUserDto GetAuthUserResponse(User user)
   {
     var authUser = _mapper.Map<AuthUserDto>(user);
@@ -152,8 +143,8 @@ public class AuthController : ControllerBase
   {
     var tokenHandler = new JwtSecurityTokenHandler();
     var key = Encoding.UTF8.GetBytes(_jwtTokenSettings.Key);
-    var issueAt = DateTime.UtcNow;
-    var expires = issueAt.AddMinutes(_jwtTokenSettings.TokenLifetimeMinutes);
+    var issuedAt = DateTime.UtcNow;
+    var expires = issuedAt.AddMinutes(_jwtTokenSettings.TokenLifetimeMinutes);
     var claims = new List<Claim>
     {
       new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -166,7 +157,7 @@ public class AuthController : ControllerBase
     {
       Subject = new ClaimsIdentity(claims),
       Expires = expires,
-      IssuedAt = issueAt,
+      IssuedAt = issuedAt,
       Issuer = _jwtTokenSettings.Issuer,
       Audience = _jwtTokenSettings.Audience,
       SigningCredentials = new SigningCredentials(

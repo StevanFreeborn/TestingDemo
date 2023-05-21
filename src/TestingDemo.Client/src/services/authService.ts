@@ -1,39 +1,43 @@
-import { UserActions, useUserContext } from '../context/UserContext';
 import { LoginError } from '../errors/loginError';
-import { useClient } from './httpClient';
+import { AuthUser } from '../types/AuthUser';
+import { FetchClient } from '../types/FetchClient';
 
 type LoginRequest = {
   username: string;
   password: string;
 };
 
-export function useAuthService() {
+export function authService(client: FetchClient) {
   const baseUrl = process.env.REACT_APP_API_URL;
-  const { dispatchUserAction } = useUserContext();
-  const client = useClient();
 
-  async function refreshToken() {
+  async function refreshToken({
+    successHandler,
+    failureHandler,
+  }: {
+    successHandler: (payload: any) => void;
+    failureHandler: () => void;
+  }): Promise<AuthUser | undefined> {
     const response = await client.post(`${baseUrl}/api/auth/refresh-token`);
 
     if (response.ok === false) {
-      dispatchUserAction({ type: UserActions.LOGOUT });
+      failureHandler();
       return;
     }
 
     const payload = await response.json();
-
-    dispatchUserAction({ type: UserActions.LOGIN, payload });
+    successHandler(payload);
+    return payload;
   }
 
   async function logUserIn(loginRequest: LoginRequest) {
     const response = await client.post<LoginRequest>(
       `${baseUrl}/api/auth/login`,
-      loginRequest,
       {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
+      loginRequest
     );
 
     const data = await response.json();

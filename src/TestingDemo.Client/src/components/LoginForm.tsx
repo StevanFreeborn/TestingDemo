@@ -1,7 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserActions, useUserContext } from '../context/UserContext';
-import { useAuthService } from '../services/authService';
+import { useFetchClient } from '../hooks/useFetchClient';
+import { useUserContext } from '../hooks/useUserContext';
+import { authService } from '../services/authService';
 import { isNullEmptyOrWhitespace } from '../utils/stringUtils';
 import { AuthInput } from './AuthInput';
 import styles from './LoginForm.module.css';
@@ -9,8 +10,9 @@ import AccountIcon from './icons/AccountIcon';
 import LockIcon from './icons/LockIcon';
 
 export default function LoginForm() {
-  const { dispatchUserAction } = useUserContext();
-  const { logUserIn } = useAuthService();
+  const { logIn } = useUserContext();
+  const client = useFetchClient();
+  const { logUserIn } = authService(client);
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -44,12 +46,7 @@ export default function LoginForm() {
       }
 
       const authUser = await logUserIn({ username, password });
-
-      dispatchUserAction({
-        type: UserActions.LOGIN,
-        payload: authUser,
-      });
-
+      logIn(authUser);
       navigate('/');
     } catch (error) {
       let errorMsg = 'An error occurred attempting to login';
