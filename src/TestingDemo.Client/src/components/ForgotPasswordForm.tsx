@@ -16,6 +16,7 @@ export default function ForgotPasswordForm() {
       <div className={styles.headerContainer}>
         <h2>Forgot Password?</h2>
       </div>
+      <hr className={styles.blueRuler} />
       <div className={styles.infoContainer}>
         <div className={styles.infoItem}>
           <InfoIcon className={styles.icon} />
@@ -29,8 +30,8 @@ export default function ForgotPasswordForm() {
           </p>
         </div>
       </div>
-      <hr />
-      <p>
+      <hr className={styles.ruler} />
+      <p className={styles.usernameInstructions}>
         If you still can&apos;t log in, enter your username to reset your
         password.
       </p>
@@ -41,6 +42,11 @@ export default function ForgotPasswordForm() {
         value={username}
         changeHandler={handleUsernameChange}
       />
+      <div className={styles.buttonContainer}>
+        <button className={styles.resetEmailButton} type="submit">
+          Reset via Email
+        </button>
+      </div>
     </form>
   );
 }
