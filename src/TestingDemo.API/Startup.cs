@@ -2,30 +2,30 @@ namespace TestingDemo.API.Startup;
 
 public static class Startup
 {
-  public static WebApplicationBuilder AddConfiguration(this WebApplicationBuilder builder)
+  public static IServiceCollection AddSettings(this IServiceCollection services, ConfigurationManager config)
   {
-    builder.Services.Configure<MongoDbSettings>(
-      builder.Configuration.GetSection("MongoDbSettings")
+    services.Configure<MongoDbSettings>(
+      config.GetSection("MongoDbSettings")
     );
 
-    builder.Services.Configure<SendGridProviderSettings>(
-      builder.Configuration.GetSection("SendGrid")
+    services.Configure<SendGridProviderSettings>(
+      config.GetSection("SendGrid")
     );
 
-    builder.Services.Configure<EmailSettings>(
-      builder.Configuration.GetSection("Email")
+    services.Configure<EmailSettings>(
+      config.GetSection("Email")
     );
 
-    builder.Services.Configure<JwtTokenSettings>(
-      builder.Configuration.GetSection("JWT")
+    services.Configure<JwtTokenSettings>(
+      config.GetSection("JWT")
     );
 
-    return builder;
+    return services;
   }
 
-  public static WebApplicationBuilder AddAndConfigureJWTAuth(this WebApplicationBuilder builder)
+  public static IServiceCollection AddAndConfigureJWTAuth(this IServiceCollection services, ConfigurationManager config)
   {
-    builder.Services
+    services
     .AddAuthentication(
       x =>
       {
@@ -39,15 +39,16 @@ public static class Startup
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
           Encoding.UTF8.GetBytes(
-            builder.Configuration.GetSection("JWT:Key").Value!
+            config.GetSection("JWT:Key").Value!
           )
         ),
-        ValidIssuer = builder.Configuration.GetSection("JWT:Issuer").Value,
-        ValidAudience = builder.Configuration.GetSection("JWT:Audience").Value,
+        ValidIssuer = config.GetSection("JWT:Issuer").Value,
+        ValidAudience = config.GetSection("JWT:Audience").Value,
+        ClockSkew = TimeSpan.Zero,
       }
     );
 
-    return builder;
+    return services;
   }
 
   public static IServiceCollection AddAutoMapperAndProfiles(this IServiceCollection services)

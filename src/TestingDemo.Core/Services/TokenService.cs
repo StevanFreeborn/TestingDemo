@@ -27,14 +27,14 @@ public class TokenService : ITokenService
     {
       UserId = user.Id,
       Token = GenerateToken(),
-      ExpiresAt = DateTime.UtcNow.AddDays(7),
+      ExpiresAt = DateTime.UtcNow.AddHours(12),
       TokenType = AuthTokenType.RefreshToken,
     };
 
     return await _tokenRepository.CreateTokenAsync(authToken);
   }
 
-  public async Task<AuthToken> VerifyAndGetRefreshToken(string? token, string userId)
+  public async Task<AuthToken> VerifyAndGetRefreshToken(string? token)
   {
     if (token is null)
     {
@@ -43,12 +43,12 @@ public class TokenService : ITokenService
 
     var refreshToken = await _tokenRepository.GetToken(token, AuthTokenType.RefreshToken);
 
-    if (refreshToken is null || userId is null)
+    if (refreshToken is null)
     {
       throw new InvalidRefreshTokenException();
     }
 
-    if (refreshToken.Revoked is true || refreshToken.UserId != userId)
+    if (refreshToken.Revoked is true)
     {
       await _tokenRepository.RevokeAllRefreshTokensForUser(refreshToken.UserId);
       throw new InvalidRefreshTokenException();

@@ -1,0 +1,41 @@
+.forgotPasswordLink {
+  color: #fff;
+  text-decoration: none;
+  font-size: 11px;
+}
+
+.actionsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgotPasswordLink:hover {
+  text-decoration: underline;
+}
+
+.loginButton {
+  border: 0;
+  background: #f7941d;
+  color: #fff;
+  padding: 7.5px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background-color: #df8419;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  color: #e74c3c;
+  background-color: #ffffffd9;
+  font-weight: 700;
+  margin: 1em -20px;
+  padding: 10px 5px;
+}

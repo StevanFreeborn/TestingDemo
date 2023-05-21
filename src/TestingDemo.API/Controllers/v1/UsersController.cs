@@ -7,10 +7,10 @@ namespace TestingDemo.API.Controllers.V1;
 [Produces("application/json")]
 public class UsersController : ControllerBase
 {
-  private readonly UserService _userService;
+  private readonly IUserService _userService;
   private readonly IMapper _mapper;
 
-  public UsersController(UserService userService, IMapper mapper)
+  public UsersController(IUserService userService, IMapper mapper)
   {
     _userService = userService;
     _mapper = mapper;
