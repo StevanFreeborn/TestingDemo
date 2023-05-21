@@ -25,10 +25,10 @@ export function useUserContext() {
     dispatchUserAction({ type: UserActions.LOGIN, payload: payload });
   }
 
-  async function refreshAccessToken(originalRequest: Request) {
+  async function refreshUserAccessToken(originalRequest: Request) {
     const client = fetchClient();
-    const { refreshToken } = authService(client);
-    const authUser = await refreshToken({
+    const { refreshAccessToken } = authService(client);
+    const authUser = await refreshAccessToken({
       successHandler: logIn,
       failureHandler: logOut,
     });
@@ -43,6 +43,6 @@ export function useUserContext() {
     userState,
     logIn,
     logOut,
-    refreshAccessToken,
+    refreshUserAccessToken,
   };
 }

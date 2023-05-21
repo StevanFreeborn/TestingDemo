@@ -87,9 +87,16 @@ public class AuthController : ControllerBase
   [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
   public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDto forgotRequest)
   {
-    var user = await _userService.GetUserByUsernameAsync(forgotRequest.Username);
-    var resetPasswordToken = await _tokenService.CreateResetPasswordTokenForUser(user);
-    await _emailService.SendPasswordResetEmail(user.Email, resetPasswordToken.Token);
+    try
+    {
+      var user = await _userService.GetUserByUsernameAsync(forgotRequest.Username);
+      var resetPasswordToken = await _tokenService.CreateResetPasswordTokenForUser(user);
+      await _emailService.SendPasswordResetEmail(user.Email, resetPasswordToken.Token);
+    }
+    catch (Exception e) when (e is ModelNotFoundException)
+    {
+    }
+
     return Ok();
   }
 

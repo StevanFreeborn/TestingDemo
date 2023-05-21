@@ -7,10 +7,14 @@ type LoginRequest = {
   password: string;
 };
 
+type ForgotPasswordRequest = {
+  username: string;
+};
+
 export function authService(client: FetchClient) {
   const baseUrl = process.env.REACT_APP_API_URL;
 
-  async function refreshToken({
+  async function refreshAccessToken({
     successHandler,
     failureHandler,
   }: {
@@ -29,7 +33,7 @@ export function authService(client: FetchClient) {
     return payload;
   }
 
-  async function logUserIn(loginRequest: LoginRequest) {
+  async function logUserIn(request: LoginRequest) {
     const response = await client.post<LoginRequest>(
       `${baseUrl}/api/auth/login`,
       {
@@ -37,7 +41,7 @@ export function authService(client: FetchClient) {
           'Content-Type': 'application/json',
         },
       },
-      loginRequest
+      request
     );
 
     const data = await response.json();
@@ -53,8 +57,21 @@ export function authService(client: FetchClient) {
     return data;
   }
 
+  async function sendForgotPasswordEmail(request: ForgotPasswordRequest) {
+    await client.post<ForgotPasswordRequest>(
+      `${baseUrl}/api/auth/forgot-password`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      request
+    );
+  }
+
   return {
     logUserIn,
-    refreshToken,
+    refreshAccessToken,
+    sendForgotPasswordEmail,
   };
 }

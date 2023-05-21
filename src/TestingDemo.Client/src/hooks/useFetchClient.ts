@@ -3,11 +3,11 @@ import { getAuthHeader } from '../utils/authUtils';
 import { useUserContext } from './useUserContext';
 
 export function useFetchClient() {
-  const { userState, refreshAccessToken } = useUserContext();
+  const { userState, refreshUserAccessToken } = useUserContext();
   const authHeader = getAuthHeader(userState);
 
   return fetchClient({
     authHeader,
-    unauthorizedResponseHandler: refreshAccessToken,
+    unauthorizedResponseHandler: refreshUserAccessToken,
   });
 }

@@ -1,4 +1,6 @@
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react';
+import { fetchClient } from '../http/fetchClient';
+import { authService } from '../services/authService';
 import { isNullEmptyOrWhitespace } from '../utils/stringUtils';
 import AuthFormErrorContainer from './AuthFormErrorContainer';
 import { AuthInput } from './AuthInput';
@@ -85,6 +87,8 @@ function FormSubmissionConfirmation() {
 }
 
 export default function ForgotPasswordForm() {
+  const client = fetchClient();
+  const { sendForgotPasswordEmail } = authService(client);
   const [submitted, setSubmitted] = useState(false);
   const [username, setUsername] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
@@ -96,28 +100,20 @@ export default function ForgotPasswordForm() {
   function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErrors([]);
-    try {
-      const formErrors: string[] = [];
 
-      if (isNullEmptyOrWhitespace(username)) {
-        formErrors.push('Username is required');
-      }
+    const formErrors: string[] = [];
 
-      if (formErrors.length > 0) {
-        setErrors(prev => [...prev, ...formErrors]);
-        return;
-      }
-
-      setSubmitted(true);
-    } catch (error) {
-      let errorMsg = 'An error occurred attempting to login';
-
-      if (error instanceof Error) {
-        errorMsg = error.message;
-      }
-
-      setErrors(prev => [...prev, errorMsg]);
+    if (isNullEmptyOrWhitespace(username)) {
+      formErrors.push('Username is required');
     }
+
+    if (formErrors.length > 0) {
+      setErrors(prev => [...prev, ...formErrors]);
+      return;
+    }
+
+    sendForgotPasswordEmail({ username });
+    setSubmitted(true);
   }
 
   return (
