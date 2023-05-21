@@ -4,6 +4,7 @@ import { useFetchClient } from '../hooks/useFetchClient';
 import { useUserContext } from '../hooks/useUserContext';
 import { authService } from '../services/authService';
 import { isNullEmptyOrWhitespace } from '../utils/stringUtils';
+import AuthFormErrorContainer from './AuthFormErrorContainer';
 import { AuthInput } from './AuthInput';
 import styles from './LoginForm.module.css';
 import AccountIcon from './icons/AccountIcon';
@@ -83,13 +84,7 @@ export default function LoginForm() {
           Login
         </button>
       </div>
-      {errors.length > 0 ? (
-        <div className={styles.errorContainer}>
-          {errors.map((error, i) => (
-            <p key={i}>{error}</p>
-          ))}
-        </div>
-      ) : null}
+      <AuthFormErrorContainer errors={errors} />
     </form>
   );
 }
