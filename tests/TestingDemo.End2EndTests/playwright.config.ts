@@ -10,7 +10,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:5001",
+    baseURL: process.env.CLIENT_BASE_URL,
     trace: "on-first-retry",
   },
 
@@ -45,21 +45,22 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
   ],
-
   webServer: [
     {
       ignoreHTTPSErrors: true,
       command: "dotnet run",
-      port: 5000,
+      port: parseInt(process.env.API_PORT ?? "0"),
       reuseExistingServer: !process.env.CI,
-      cwd: "C:\\Users\\sfree\\software_projects\\TestingDemo\\src\\TestingDemo.API",
+      cwd: "../../src/TestingDemo.API",
+      stdout: "pipe",
     },
     {
       ignoreHTTPSErrors: true,
       command: "npm run dev",
-      port: 5001,
+      port: parseInt(process.env.CLIENT_PORT ?? "0"),
       reuseExistingServer: !process.env.CI,
-      cwd: "C:\\Users\\sfree\\software_projects\\TestingDemo\\src\\TestingDemo.Client",
+      cwd: "../../src/TestingDemo.Client",
+      stdout: "pipe",
     },
   ],
 });
