@@ -48,16 +48,18 @@ export default defineConfig({
 
   webServer: [
     {
+      ignoreHTTPSErrors: true,
       command: "dotnet run",
-      url: "http://localhost:5000",
+      port: 5000,
       reuseExistingServer: !process.env.CI,
-      cwd: "./src/TestingDemo.API",
+      cwd: "C:\\Users\\sfree\\software_projects\\TestingDemo\\src\\TestingDemo.API",
     },
     {
+      ignoreHTTPSErrors: true,
       command: "npm run dev",
-      url: "http://localhost:5001",
+      port: 5001,
       reuseExistingServer: !process.env.CI,
-      cwd: "./src/TestingDemo.Client",
+      cwd: "C:\\Users\\sfree\\software_projects\\TestingDemo\\src\\TestingDemo.Client",
     },
   ],
 });
