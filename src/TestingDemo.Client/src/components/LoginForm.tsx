@@ -9,6 +9,7 @@ import { AuthInput } from './AuthInput';
 import styles from './LoginForm.module.css';
 import AccountIcon from './icons/AccountIcon';
 import LockIcon from './icons/LockIcon';
+import LoginButton from './LoginButton';
 
 export default function LoginForm() {
   const { logIn } = useUserContext();
@@ -80,9 +81,7 @@ export default function LoginForm() {
         <Link className={styles.forgotPasswordLink} to="/Public/ForgotPassword">
           Forgot Password?
         </Link>
-        <button className={styles.loginButton} type="submit">
-          Login
-        </button>
+        <LoginButton type="submit" />
       </div>
       <AuthFormErrorContainer errors={errors} />
     </form>

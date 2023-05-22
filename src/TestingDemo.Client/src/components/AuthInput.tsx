@@ -6,8 +6,9 @@ type AuthInputProps = {
   type: string;
   placeholder: string;
   value: string;
-  changeHandler: ChangeEventHandler<HTMLInputElement>;
+  changeHandler?: ChangeEventHandler<HTMLInputElement>;
   Icon: ComponentType<IconProps>;
+  readOnly?: boolean;
 };
 
 export function AuthInput({
@@ -16,6 +17,7 @@ export function AuthInput({
   value,
   Icon,
   changeHandler,
+  readOnly,
 }: AuthInputProps) {
   return (
     <div className={styles.formGroup}>
@@ -27,6 +29,7 @@ export function AuthInput({
         placeholder={placeholder}
         value={value}
         onChange={changeHandler}
+        readOnly={readOnly}
       />
     </div>
   );

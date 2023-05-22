@@ -1,6 +1,7 @@
 import { LoginError } from '../errors/loginError';
 import { AuthUser } from '../types/AuthUser';
 import { FetchClient } from '../types/FetchClient';
+import { User } from '../types/User';
 
 type LoginRequest = {
   username: string;
@@ -9,6 +10,10 @@ type LoginRequest = {
 
 type ForgotPasswordRequest = {
   username: string;
+};
+
+type VerifyResetPasswordTokenRequest = {
+  token: string;
 };
 
 export function authService(client: FetchClient) {
@@ -69,9 +74,24 @@ export function authService(client: FetchClient) {
     );
   }
 
+  async function verifyForgotPasswordToken(
+    request: VerifyResetPasswordTokenRequest
+  ): Promise<User> {
+    const response = await client.get(
+      `${baseUrl}/api/auth/verify-reset-password?token=${request.token}`
+    );
+
+    if (response.ok === false) {
+      throw new Error('Invalid reset password token');
+    }
+
+    return await response.json();
+  }
+
   return {
     logUserIn,
     refreshAccessToken,
     sendForgotPasswordEmail,
+    verifyForgotPasswordToken,
   };
 }

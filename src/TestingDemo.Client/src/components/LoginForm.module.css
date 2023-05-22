@@ -14,19 +14,6 @@
   text-decoration: underline;
 }
 
-.loginButton {
-  border: 0;
-  background: #f7941d;
-  color: #fff;
-  padding: 7.5px 15px;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.loginButton:hover {
-  background-color: #df8419;
-}
-
 .errorContainer {
   display: flex;
   flex-direction: column;

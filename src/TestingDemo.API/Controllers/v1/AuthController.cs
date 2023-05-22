@@ -114,6 +114,19 @@ public class AuthController : ControllerBase
     return Ok();
   }
 
+  [MapToApiVersion("1.0")]
+  [HttpGet("verify-reset-password")]
+  [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+  [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+  public async Task<IActionResult> VerifyResetPasswordToken(string token)
+  {
+    var authToken = await _tokenService.GetPasswordResetToken(token);
+    var user = await _userService.GetUserByIdAsync(authToken.UserId);
+    var userDto = _mapper.Map<UserDto>(user);
+    return Ok(userDto);
+  }
+
   private static string? GetRefreshTokenFromRequest(HttpRequest req)
   {
     return req.Cookies[RefreshTokenName];

@@ -76,7 +76,7 @@ function FormSubmissionConfirmation() {
 export default function ForgotPasswordForm() {
   const client = fetchClient();
   const { sendForgotPasswordEmail } = authService(client);
-  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [username, setUsername] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -100,13 +100,13 @@ export default function ForgotPasswordForm() {
     }
 
     sendForgotPasswordEmail({ username });
-    setSubmitted(true);
+    setIsSubmitted(true);
   }
 
   return (
     <>
       <AuthFormContainer>
-        {submitted ? (
+        {isSubmitted ? (
           <FormSubmissionConfirmation />
         ) : (
           <Form
