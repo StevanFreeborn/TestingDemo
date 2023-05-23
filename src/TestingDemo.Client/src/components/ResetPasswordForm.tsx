@@ -151,7 +151,6 @@ export default function ResetPasswordForm() {
       logIn(authUser);
       navigate('/');
     } catch (error) {
-      console.log(error);
       let errorMessage = 'Unable to reset password';
 
       if (error instanceof Error) {
