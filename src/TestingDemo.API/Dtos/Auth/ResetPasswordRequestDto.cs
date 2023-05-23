@@ -7,5 +7,8 @@ public class ResetPasswordRequestDto
 
   [Required]
   [UserPassword]
-  public string NewPassword { get; set; } = string.Empty;
+  public string Password { get; set; } = string.Empty;
+
+  [Required]
+  public string ConfirmPassword { get; set; } = string.Empty;
 }

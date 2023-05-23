@@ -104,6 +104,14 @@ public class TokenService : ITokenService
     using var rng = RandomNumberGenerator.Create();
     rng.GetBytes(randomBytes);
     var token = Convert.ToBase64String(randomBytes);
-    return token;
+    return RemoveNonAlphaNumericCharacters(token);
+  }
+
+  private static string RemoveNonAlphaNumericCharacters(string input)
+  {
+    var pattern = @"[^A-Za-z0-9]";
+    var replacement = string.Empty;
+    var output = Regex.Replace(input, pattern, replacement);
+    return output;
   }
 }
