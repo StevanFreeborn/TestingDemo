@@ -1,4 +1,4 @@
-namespace TestingDemo.UnitTests.Core;
+namespace TestingDemo.UnitTests.Core.Services;
 
 public class EmailServiceTests
 {
