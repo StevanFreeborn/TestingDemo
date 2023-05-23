@@ -4,12 +4,10 @@
   width: 380px;
   height: 520px;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.35);
-  background: linear-gradient(
-    -180deg,
-    rgba(16, 49, 116, 0.8) 30%,
-    rgba(74, 135, 227, 0.8) 46%,
-    rgba(61, 88, 141, 0.8) 93%
-  );
+  background: linear-gradient(-180deg,
+      rgba(16, 49, 116, 0.8) 30%,
+      rgba(74, 135, 227, 0.8) 46%,
+      rgba(61, 88, 141, 0.8) 93%);
   border-radius: 3px;
   border: 1px solid #acb0bb;
 }
@@ -37,6 +35,10 @@
   flex-direction: column;
   justify-content: flex-end;
   flex: 1;
+  text-align: center;
+}
+
+.copyRightContainer>p {
   text-align: center;
   color: #d4d4d4;
   font-size: 11px;
