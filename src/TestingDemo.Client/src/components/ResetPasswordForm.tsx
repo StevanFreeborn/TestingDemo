@@ -1,5 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { ResetPasswordError } from '../errors/resetPasswordError';
+import { useUserContext } from '../hooks/useUserContext';
 import { fetchClient } from '../http/fetchClient';
 import { authService } from '../services/authService';
 import { isNullEmptyOrWhitespace } from '../utils/stringUtils';
@@ -59,14 +61,14 @@ function Form({
         />
         <AuthInput
           Icon={LockIcon}
-          type="text"
+          type="password"
           placeholder="New Password"
           value={password}
           changeHandler={passwordChangeHandler}
         />
         <AuthInput
           Icon={LockIcon}
-          type="text"
+          type="password"
           placeholder="Verify New Password"
           value={confirmPassword}
           changeHandler={confirmPasswordChangeHandler}
@@ -80,14 +82,15 @@ function Form({
 }
 
 export default function ResetPasswordForm() {
+  const { logIn } = useUserContext();
   const [isValidated, setIsValidated] = useState(false);
   const [isTokenInvalid, setIsTokenInvalid] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const token = searchParams.get('t');
 
   useEffect(() => {
@@ -116,7 +119,7 @@ export default function ResetPasswordForm() {
     setConfirmPassword(e.target.value);
   }
 
-  function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErrors([]);
     try {
@@ -141,15 +144,25 @@ export default function ResetPasswordForm() {
         return;
       }
 
-      // TODO: Attempt to update user password
-      // TODO: Attempt to log user in with new password
-      // TODO: navigate user to dashboard
+      const client = fetchClient();
+      const { resetUserPassword, logUserIn } = authService(client);
+      await resetUserPassword({ token, password, confirmPassword });
+      const authUser = await logUserIn({ username, password });
+      logIn(authUser);
+      navigate('/');
     } catch (error) {
-      console.log(error);
-      // TODO: Decide how to display errors in ui
-    }
+      let errorMessage = 'Unable to reset password';
 
-    setIsSubmitted(true);
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      if (error instanceof ResetPasswordError) {
+        errorMessage = error.response.detail ?? error.message;
+      }
+
+      setErrors(prev => [...prev, errorMessage]);
+    }
   }
 
   return (
@@ -158,8 +171,6 @@ export default function ResetPasswordForm() {
         {isValidated ? (
           isTokenInvalid ? (
             <ResetPasswordExpiration />
-          ) : isSubmitted ? (
-            <div>Submitted</div>
           ) : (
             <Form
               submitHandler={handleFormSubmit}

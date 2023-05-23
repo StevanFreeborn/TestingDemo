@@ -70,7 +70,7 @@ public class UserService : IUserService
     return user;
   }
 
-  public async Task<User> UpdateUserPassword(string userId, string newPassword)
+  public async Task<User> UpdateUserPassword(string userId, string newPassword, string confirmedPassword)
   {
     var existingUser = await _userRepository.GetByIdAsync(userId);
 
@@ -79,7 +79,28 @@ public class UserService : IUserService
       throw new InvalidResetPasswordTokenException();
     }
 
+    if (newPassword != confirmedPassword)
+    {
+      throw new InvalidResetPasswordException("The verification password does not match the new password");
+    }
+
     var newPasswordHash = Authenticator.HashPassword(newPassword, existingUser.Salt);
+
+    if (newPasswordHash == existingUser.Password)
+    {
+      throw new InvalidResetPasswordException("New Password must be different than the current password");
+    }
+
+    if (existingUser.PreviousPasswords.Contains(newPasswordHash))
+    {
+      throw new InvalidResetPasswordException("New Password cannot equal any of the last 5 passwords");
+    }
+
+    existingUser.PreviousPasswords = existingUser
+    .PreviousPasswords
+    .Prepend(existingUser.Password)
+    .Take(5)
+    .ToList();
 
     existingUser.Password = newPasswordHash;
 

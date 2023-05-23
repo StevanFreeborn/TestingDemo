@@ -1,4 +1,5 @@
 import { LoginError } from '../errors/loginError';
+import { ResetPasswordError } from '../errors/resetPasswordError';
 import { AuthUser } from '../types/AuthUser';
 import { FetchClient } from '../types/FetchClient';
 import { User } from '../types/User';
@@ -14,6 +15,12 @@ type ForgotPasswordRequest = {
 
 type VerifyResetPasswordTokenRequest = {
   token: string;
+};
+
+type ResetPasswordRequest = {
+  token: string | null;
+  password: string;
+  confirmPassword: string;
 };
 
 export function authService(client: FetchClient) {
@@ -81,11 +88,33 @@ export function authService(client: FetchClient) {
       `${baseUrl}/api/auth/verify-reset-password?token=${request.token}`
     );
 
+    const data = await response.json();
+
     if (response.ok === false) {
-      throw new Error('Invalid reset password token');
+      throw new ResetPasswordError('Invalid reset password token', data);
     }
 
-    return await response.json();
+    return data;
+  }
+
+  async function resetUserPassword(request: ResetPasswordRequest) {
+    const response = await client.post<ResetPasswordRequest>(
+      `${baseUrl}/api/auth/reset-password`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      request
+    );
+
+    if (response.ok === true) {
+      return;
+    }
+
+    const data = await response.json();
+
+    throw new ResetPasswordError('Unable to reset password', data);
   }
 
   return {
@@ -93,5 +122,6 @@ export function authService(client: FetchClient) {
     refreshAccessToken,
     sendForgotPasswordEmail,
     verifyForgotPasswordToken,
+    resetUserPassword,
   };
 }
