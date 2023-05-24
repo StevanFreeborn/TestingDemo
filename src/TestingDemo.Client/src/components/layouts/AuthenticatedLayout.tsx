@@ -2,8 +2,11 @@ import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import defaultProfilePicture from '../../assets/images/default-profile-picture.png';
 import logo from '../../assets/images/testing-demo-logo-180-47.svg';
+import CogIcon from '../icons/CogIcon';
 import ContentIcon from '../icons/ContentIcon';
 import GaugeIcon from '../icons/GaugeIcon';
+import HelpCircleIcon from '../icons/HelpCircleIcon';
+import LeftArrowIcon from '../icons/LeftArrowIcon';
 import MagnifyIcon from '../icons/MagnifyIcon';
 import ReportIcon from '../icons/ReportIcon';
 import styles from './AuthenticatedLayout.module.css';
@@ -35,7 +38,7 @@ export default function AuthenticatedLayout({
           </div>
         </div>
         <div className={styles.navBodyContainer}>
-          <div className={styles.navigationContainer}>
+          <div className={styles.navigationTopContainer}>
             <div className={styles.searchContainer}>
               <input type="text" placeholder="Search All Content"></input>
               <div className={styles.searchIconContainer}>
@@ -65,8 +68,34 @@ export default function AuthenticatedLayout({
               </div>
             </Link>
           </div>
-          <div className={styles.gearIconContainer}>
-            <div>Gear Icon</div>
+          <div className={styles.navigationBottomContainer}>
+            <Link to="/Admin" className={styles.navLink}>
+              <div className={styles.navItem}>
+                <div className={styles.gearIconContainer}>
+                  <CogIcon className={styles.gearIcon} />
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+        <div className={styles.navFooterContainer}>
+          <div className={styles.navItemFooter}>
+            <button className={styles.navIconFooterContainer}>
+              <LeftArrowIcon className={styles.navFooterIcon} />
+            </button>
+          </div>
+          <div className={styles.navItemFooter}>
+            <a
+              href="/Help/OnspringDocumentation.htm"
+              className={styles.navIconFooterContainer}
+            >
+              <HelpCircleIcon className={styles.navFooterIcon} />
+            </a>
+          </div>
+          <div className={styles.navItemFooter}>
+            <div className={styles.navIconFooterContainer}>
+              <div className={styles.statusIcon}></div>
+            </div>
           </div>
         </div>
       </nav>
