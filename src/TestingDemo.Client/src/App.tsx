@@ -1,36 +1,23 @@
-import { MouseEvent, useState } from 'react';
-import { useFetchClient } from './hooks/useFetchClient';
-import { useUserContext } from './hooks/useUserContext';
+import { Route, Routes } from 'react-router-dom';
+import { ContentPage } from './pages/ContentPage';
+import { DashboardPage } from './pages/DashboardPage';
+import { ReportPage } from './pages/ReportPage';
 
-function App() {
-  const [user, setUser] = useState(undefined);
-  const { userState, logOut } = useUserContext();
-  const client = useFetchClient();
-
-  function handleLogOutClick(e: MouseEvent<HTMLButtonElement>) {
-    logOut();
-  }
-
-  async function handleMakeRequestClick(e: MouseEvent<HTMLButtonElement>) {
-    const res = await client.get(
-      `https://localhost:5000/api/users/${userState?.user.id}`
-    );
-    const data = await res.json();
-    setUser(data);
-  }
-
+export default function App() {
   return (
-    <div>
-      <h1>Hello World</h1>
-      <button type="button" onClick={handleLogOutClick}>
-        Log Out
-      </button>
-      <button type="button" onClick={handleMakeRequestClick}>
-        Make Authorized Request
-      </button>
-      <div>{JSON.stringify(user)}</div>
+    <div
+      style={{
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Routes>
+        <Route index element={<DashboardPage />} />
+        <Route path="Report" element={<ReportPage />} />
+        <Route path="Content" element={<ContentPage />} />
+      </Routes>
     </div>
   );
 }
-
-export default App;

@@ -13,7 +13,7 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route element={<AuthenticatedRoute />}>
-          <Route path="/" element={<App />} />
+          <Route path="/*" element={<App />} />
         </Route>
         <Route path="/Public">
           <Route element={<AnonymousRoute />}>

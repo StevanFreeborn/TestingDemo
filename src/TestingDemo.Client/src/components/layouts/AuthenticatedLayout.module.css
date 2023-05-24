@@ -13,7 +13,7 @@
   background-color: #405a90;
 }
 
-.brandContainer {
+.navHeaderContainer {
   background-color: #103174;
   padding: 10px 10px 20px 10px;
 }
@@ -66,6 +66,13 @@
   max-width: 120px;
 }
 
+.navBodyContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .navigationContainer {
   display: flex;
   flex-direction: column;
@@ -99,7 +106,7 @@
   outline: none;
 }
 
-.iconContainer {
+.searchIconContainer {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,11 +120,51 @@
   border-bottom-right-radius: 3px;
 }
 
-.icon {
+.searchIcon {
   width: 22px;
-  color: #7f7f7f;
   fill: #7f7f7f;
   transform: scaleX(-1);
+}
+
+.navItem,
+.navItemActive {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  border-left: 5px solid transparent;
+}
+
+.navItemActive {
+  border-left-color: #f7941d;
+  background-color: #5b627e;
+}
+
+.navItem:hover {
+  background-color: #5b627e;
+}
+
+.navItemIconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navItemIcon {
+  width: 24px;
+  fill: #ffffff;
+  transform: scaleX(-1);
+}
+
+.navLink {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
 }
 
 .mainContainer {

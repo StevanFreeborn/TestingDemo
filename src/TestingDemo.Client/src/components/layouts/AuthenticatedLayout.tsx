@@ -2,7 +2,10 @@ import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import defaultProfilePicture from '../../assets/images/default-profile-picture.png';
 import logo from '../../assets/images/testing-demo-logo-180-47.svg';
+import ContentIcon from '../icons/ContentIcon';
+import GaugeIcon from '../icons/GaugeIcon';
 import MagnifyIcon from '../icons/MagnifyIcon';
+import ReportIcon from '../icons/ReportIcon';
 import styles from './AuthenticatedLayout.module.css';
 
 export default function AuthenticatedLayout({
@@ -15,7 +18,7 @@ export default function AuthenticatedLayout({
   return (
     <div className={styles.appContainer}>
       <nav className={styles.primaryNav}>
-        <div className={styles.brandContainer}>
+        <div className={styles.navHeaderContainer}>
           <div className={styles.logoContainer}>
             <Link to="/">
               <img alt="testing-demo-logo" src={logo} className={styles.logo} />
@@ -31,21 +34,39 @@ export default function AuthenticatedLayout({
             </div>
           </div>
         </div>
-        <div className={styles.navigationContainer}>
-          <div className={styles.searchContainer}>
-            <input type="text" placeholder="Search All Content"></input>
-            <div className={styles.iconContainer}>
-              <MagnifyIcon className={styles.icon} />
+        <div className={styles.navBodyContainer}>
+          <div className={styles.navigationContainer}>
+            <div className={styles.searchContainer}>
+              <input type="text" placeholder="Search All Content"></input>
+              <div className={styles.searchIconContainer}>
+                <MagnifyIcon className={styles.searchIcon} />
+              </div>
             </div>
+            <div className={styles.navItemActive}>
+              <div className={styles.navItemIconContainer}>
+                <GaugeIcon className={styles.navItemIcon} />
+              </div>
+              <div className={styles.navLink}>Dashboards</div>
+            </div>
+            <Link to="/Report" className={styles.navLink}>
+              <div className={styles.navItem}>
+                <div className={styles.navItemIconContainer}>
+                  <ReportIcon className={styles.navItemIcon} />
+                </div>
+                <div className={styles.navLink}>Reports</div>
+              </div>
+            </Link>
+            <Link to="/Content" className={styles.navLink}>
+              <div className={styles.navItem}>
+                <div className={styles.navItemIconContainer}>
+                  <ContentIcon className={styles.navItemIcon} />
+                </div>
+                <div className={styles.navLink}>Content</div>
+              </div>
+            </Link>
           </div>
-          <div>
-            <Link to="/">Dashboards</Link>
-          </div>
-          <div>
-            <Link to="/Report">Reports</Link>
-          </div>
-          <div>
-            <Link to="/Content">Content</Link>
+          <div className={styles.gearIconContainer}>
+            <div>Gear Icon</div>
           </div>
         </div>
       </nav>
