@@ -3,18 +3,15 @@ import App from './App';
 import AnonymousRoute from './components/routes/AnonymousRoute';
 import AuthenticatedRoute from './components/routes/AuthenticatedRoute';
 import PublicRoute from './components/routes/PublicRoute';
-import ErrorPage from './pages/ErrorPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import LoginPage from './pages/LoginPage';
+import PublicNotFoundPage from './pages/PublicNotFoundPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<AuthenticatedRoute />}>
-          <Route path="/*" element={<App />} />
-        </Route>
         <Route path="/Public">
           <Route element={<AnonymousRoute />}>
             <Route
@@ -26,9 +23,12 @@ export default function AppRouter() {
           <Route element={<PublicRoute />}>
             <Route path="ForgotPassword" element={<ForgotPasswordPage />} />
             <Route path="ResetPassword" element={<ResetPasswordPage />} />
+            <Route path="*" element={<PublicNotFoundPage />} />
           </Route>
         </Route>
-        <Route path="*" element={<ErrorPage />} />
+        <Route element={<AuthenticatedRoute />}>
+          <Route path="/*" element={<App />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -1,7 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
+import { AdminPage } from './pages/AdminPage';
 import { ContentPage } from './pages/ContentPage';
 import { DashboardPage } from './pages/DashboardPage';
-import ErrorPage from './pages/ErrorPage';
+import NotFoundPage from './pages/NotFoundPage';
 import { ReportPage } from './pages/ReportPage';
 
 export default function App() {
@@ -18,7 +19,8 @@ export default function App() {
         <Route index element={<DashboardPage />} />
         <Route path="Report" element={<ReportPage />} />
         <Route path="Content" element={<ContentPage />} />
-        <Route path="*" element={<ErrorPage />} />
+        <Route path="Admin" element={<AdminPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );
