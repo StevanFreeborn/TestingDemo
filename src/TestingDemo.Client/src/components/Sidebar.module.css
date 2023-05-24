@@ -1,9 +1,14 @@
-.primaryNav {
+.primaryNav,
+.primaryNavCollapsed {
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
   width: 200px;
   background-color: #405a90;
+}
+
+.primaryNavCollapsed {
+  width: 80px;
 }
 
 .navHeaderContainer {

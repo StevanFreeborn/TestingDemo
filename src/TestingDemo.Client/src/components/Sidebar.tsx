@@ -1,3 +1,4 @@
+import { MouseEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import defaultProfilePicture from '../assets/images/default-profile-picture.png';
 import logo from '../assets/images/testing-demo-logo-180-47.svg';
@@ -13,9 +14,16 @@ import ReportIcon from './icons/ReportIcon';
 export default function SideBar() {
   const username = 'Stevan';
   const role = 'System Administrator';
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  function handleCollapseButtonClick(e: MouseEvent<HTMLButtonElement>) {
+    setIsCollapsed(!isCollapsed);
+  }
 
   return (
-    <nav className={styles.primaryNav}>
+    <nav
+      className={isCollapsed ? styles.primaryNavCollapsed : styles.primaryNav}
+    >
       <div className={styles.navHeaderContainer}>
         <div className={styles.logoContainer}>
           <Link to="/">
@@ -40,13 +48,13 @@ export default function SideBar() {
               <MagnifyIcon className={styles.searchIcon} />
             </div>
           </div>
-          <div className={styles.navItemActive}>
+          <div title="Dashboards" className={styles.navItemActive}>
             <div className={styles.navItemIconContainer}>
               <GaugeIcon className={styles.navItemIcon} />
             </div>
             <div className={styles.navLink}>Dashboards</div>
           </div>
-          <Link to="/Report" className={styles.navLink}>
+          <Link title="Reports" to="/Report" className={styles.navLink}>
             <div className={styles.navItem}>
               <div className={styles.navItemIconContainer}>
                 <ReportIcon className={styles.navItemIcon} />
@@ -54,7 +62,7 @@ export default function SideBar() {
               <div className={styles.navLink}>Reports</div>
             </div>
           </Link>
-          <Link to="/Content" className={styles.navLink}>
+          <Link title="Content" to="/Content" className={styles.navLink}>
             <div className={styles.navItem}>
               <div className={styles.navItemIconContainer}>
                 <ContentIcon className={styles.navItemIcon} />
@@ -64,7 +72,7 @@ export default function SideBar() {
           </Link>
         </div>
         <div className={styles.navigationBottomContainer}>
-          <Link to="/Admin" className={styles.navLink}>
+          <Link title="Administration" to="/Admin" className={styles.navLink}>
             <div className={styles.navItem}>
               <div className={styles.gearIconContainer}>
                 <CogIcon className={styles.gearIcon} />
@@ -74,12 +82,15 @@ export default function SideBar() {
         </div>
       </div>
       <div className={styles.navFooterContainer}>
-        <div className={styles.navItemFooter}>
-          <button className={styles.navIconFooterContainer}>
+        <div title="Collapse" className={styles.navItemFooter}>
+          <button
+            onClick={handleCollapseButtonClick}
+            className={styles.navIconFooterContainer}
+          >
             <LeftArrowIcon className={styles.navFooterIcon} />
           </button>
         </div>
-        <div className={styles.navItemFooter}>
+        <div title="Help" className={styles.navItemFooter}>
           <a
             href="/Help/OnspringDocumentation.htm"
             className={styles.navIconFooterContainer}
@@ -87,7 +98,7 @@ export default function SideBar() {
             <HelpCircleIcon className={styles.navFooterIcon} />
           </a>
         </div>
-        <div className={styles.navItemFooter}>
+        <div title="All Systems Operational" className={styles.navItemFooter}>
           <div className={styles.navIconFooterContainer}>
             <div className={styles.statusIcon}></div>
           </div>
