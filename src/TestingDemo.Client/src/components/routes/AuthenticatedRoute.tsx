@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useUserContext } from '../../hooks/useUserContext';
+import AuthenticatedLayout from '../layouts/AuthenticatedLayout';
 
 export default function AuthenticatedRoute({
   children,
@@ -12,5 +13,9 @@ export default function AuthenticatedRoute({
     return <Navigate to="/Public/Login" replace />;
   }
 
-  return children ? children : <Outlet />;
+  return (
+    <AuthenticatedLayout>
+      {children ? children : <Outlet />}
+    </AuthenticatedLayout>
+  );
 }
