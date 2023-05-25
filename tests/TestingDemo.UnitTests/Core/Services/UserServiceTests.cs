@@ -50,7 +50,7 @@ public class UserServiceTests
   public async Task LogUserInAsync_WhenCalledAndUserIsNotFound_ItShouldThrowAnInvalidLoginException()
   {
     _userRepositoryMock.Setup(
-      m => m.GetByIdAsync(It.IsAny<string>())
+      m => m.GetByUsernameAsync(It.IsAny<string>())
     )
     .ReturnsAsync((User?) null);
 
@@ -65,7 +65,7 @@ public class UserServiceTests
     var user = new User();
 
     _userRepositoryMock.Setup(
-      m => m.GetByIdAsync(It.IsAny<string>())
+      m => m.GetByUsernameAsync(It.IsAny<string>())
     )
     .ReturnsAsync(user);
 
@@ -84,5 +84,88 @@ public class UserServiceTests
     );
 
     await action.Should().ThrowAsync<InvalidLoginException>();
+  }
+
+  [Fact]
+  public async Task LogUserInAsync_WhenCalledUserIsFoundAndPasswordIsCorrect_ItShouldReturnUser()
+  {
+    var user = new User();
+
+    _userRepositoryMock.Setup(
+      m => m.GetByUsernameAsync(It.IsAny<string>())
+    )
+    .ReturnsAsync(user);
+
+    _authenticatorMock.Setup(
+      m => m.VerifyPassword(
+        It.IsAny<string>(),
+        It.IsAny<string>(),
+        It.IsAny<string>()
+      )
+    )
+    .Returns(true);
+
+    var result = await _userService.LogUserInAsync(
+      user.Username,
+      user.Password
+    );
+
+    result.Should().Be(user);
+  }
+
+  [Fact]
+  public async Task CreateUserAsync_WhenCalledAndAUserAlreadyExistsWithTheSameUsername_ItShouldThrowAModelAlreadyExistsException()
+  {
+    var existingUser = new User();
+
+    _userRepositoryMock.Setup(
+      m => m.GetByUsernameAsync(It.IsAny<string>())
+    )
+    .ReturnsAsync(existingUser);
+
+    var action = () => _userService.CreateUserAsync(new User());
+
+    await action.Should().ThrowAsync<ModelAlreadyExistsException>();
+  }
+
+  [Fact]
+  public async Task CreateUserAsync_WhenCalledAndAUserDoesNotAlreadyExistWithTheSameUsername_ItShouldGenerateASaltForUserHashTheUsersPasswordAndCreateNewUser()
+  {
+    var originalPassword = "Password";
+    var newUser = new User
+    {
+      Username = "Username",
+      Password = originalPassword,
+    };
+
+    var salt = "salt";
+    var hashedPassword = "hashedPassword";
+
+    _userRepositoryMock.Setup(
+      m => m.GetByUsernameAsync(It.IsAny<string>())
+    )
+    .ReturnsAsync((User?) null);
+
+    _authenticatorMock.Setup(
+      m => m.GenerateRandomSalt()
+    )
+    .Returns(salt);
+
+    _authenticatorMock.Setup(
+      m => m.HashPassword(newUser.Password, salt)
+    )
+    .Returns(hashedPassword);
+
+    var result = await _userService.CreateUserAsync(newUser);
+
+    result.Should().NotBeNull();
+    result.Password.Should().Be(hashedPassword);
+    result.Password.Should().NotBe(originalPassword);
+    result.Salt.Should().Be(salt);
+
+    _userRepositoryMock.Verify(
+      m => m.CreateUserAsync(newUser),
+      Times.Once()
+    );
   }
 }
