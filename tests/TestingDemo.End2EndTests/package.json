@@ -2,14 +2,12 @@
   "name": "testingdemo.end2endtests",
   "version": "1.0.0",
   "description": "End to end tests for the TestingDemo project",
-  "main": "index.js",
   "scripts": {},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^8.0.1",
     "@playwright/test": "^1.33.0",
     "@types/node": "^20.2.3",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "prettier": "^2.8.8"
   }
 }

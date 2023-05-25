@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { AdminPage } from './pages/AdminPage';
 import { ContentPage } from './pages/ContentPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -16,7 +16,8 @@ export default function App() {
       }}
     >
       <Routes>
-        <Route index element={<DashboardPage />} />
+        <Route index element={<Navigate to="/Dashboard" replace />}></Route>
+        <Route path="Dashboard" element={<DashboardPage />} />
         <Route path="Report" element={<ReportPage />} />
         <Route path="Content" element={<ContentPage />} />
         <Route path="Admin" element={<AdminPage />} />

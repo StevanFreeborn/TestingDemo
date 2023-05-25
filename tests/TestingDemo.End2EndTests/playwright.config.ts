@@ -1,66 +1,74 @@
 /// <reference types="node" />
-import { defineConfig, devices } from "@playwright/test";
-require("dotenv").config();
+import { defineConfig, devices } from '@playwright/test';
+require('dotenv').config();
 
 export default defineConfig({
-  testDir: "./tests",
+  testDir: './tests',
+  timeout: 60 * 1000,
+  expect: {
+    timeout: 5 * 1000,
+  },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: "html",
+  reporter: [['html'], ['list']],
   use: {
     baseURL: process.env.CLIENT_BASE_URL,
-    trace: "on-first-retry",
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    contextOptions: {
+      ignoreHTTPSErrors: true,
+    },
   },
-
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
     },
     {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
     },
 
     {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
     },
     {
-      name: "Mobile Chrome",
-      use: { ...devices["Pixel 5"] },
+      name: 'Mobile Chrome',
+      use: { ...devices['Pixel 5'] },
     },
     {
-      name: "Mobile Safari",
-      use: { ...devices["iPhone 12"] },
+      name: 'Mobile Safari',
+      use: { ...devices['iPhone 12'] },
     },
     {
-      name: "Microsoft Edge",
-      use: { ...devices["Desktop Edge"], channel: "msedge" },
+      name: 'Microsoft Edge',
+      use: { ...devices['Desktop Edge'], channel: 'msedge' },
     },
     {
-      name: "Google Chrome",
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      name: 'Google Chrome',
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
   ],
   webServer: [
     {
       ignoreHTTPSErrors: true,
-      command: "dotnet run",
-      port: parseInt(process.env.API_PORT ?? "0"),
+      command: 'dotnet run',
+      port: parseInt(process.env.API_PORT ?? '0'),
       reuseExistingServer: !process.env.CI,
-      cwd: "../../src/TestingDemo.API",
-      stdout: "pipe",
+      cwd: '../../src/TestingDemo.API',
+      stdout: 'pipe',
     },
     {
       ignoreHTTPSErrors: true,
-      command: "npm run dev",
-      port: parseInt(process.env.CLIENT_PORT ?? "0"),
+      command: 'npm run dev',
+      port: parseInt(process.env.CLIENT_PORT ?? '0'),
       reuseExistingServer: !process.env.CI,
-      cwd: "../../src/TestingDemo.Client",
-      stdout: "pipe",
+      cwd: '../../src/TestingDemo.Client',
+      stdout: 'pipe',
     },
   ],
 });
