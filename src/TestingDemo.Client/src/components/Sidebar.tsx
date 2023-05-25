@@ -10,6 +10,7 @@ import HelpCircleIcon from './icons/HelpCircleIcon';
 import LeftArrowIcon from './icons/LeftArrowIcon';
 import MagnifyIcon from './icons/MagnifyIcon';
 import ReportIcon from './icons/ReportIcon';
+import RightArrowIcon from './icons/RightArrowIcon';
 
 function SideBarHeader() {
   const username = 'Stevan';
@@ -35,18 +36,31 @@ function SideBarHeader() {
 }
 
 function SideBarFooter({
+  isCollapsed,
   arrowButtonClickHandler,
 }: {
-  arrowButtonClickHandler: (e: MouseEvent<HTMLButtonElement>) => void;
+  isCollapsed: boolean;
+  arrowButtonClickHandler: (e: MouseEvent<HTMLDivElement>) => void;
 }) {
   return (
-    <div className={styles.navFooterContainer}>
-      <div title="Collapse" className={styles.navItemFooter}>
-        <button
-          onClick={arrowButtonClickHandler}
-          className={styles.navIconFooterContainer}
-        >
-          <LeftArrowIcon className={styles.navFooterIcon} />
+    <div
+      className={
+        isCollapsed
+          ? styles.navFooterContainerCollapsed
+          : styles.navFooterContainer
+      }
+    >
+      <div
+        onClick={arrowButtonClickHandler}
+        title="Collapse"
+        className={styles.navItemFooter}
+      >
+        <button className={styles.navIconFooterContainer}>
+          {isCollapsed ? (
+            <RightArrowIcon className={styles.navFooterIcon} />
+          ) : (
+            <LeftArrowIcon className={styles.navFooterIcon} />
+          )}
         </button>
       </div>
       <div title="Help" className={styles.navItemFooter}>
@@ -69,7 +83,7 @@ function SideBarFooter({
 export default function SideBar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  function handleCollapseButtonClick(e: MouseEvent<HTMLButtonElement>) {
+  function handleCollapseButtonClick(e: MouseEvent<HTMLDivElement>) {
     setIsCollapsed(!isCollapsed);
   }
 
@@ -119,7 +133,10 @@ export default function SideBar() {
           </Link>
         </div>
       </div>
-      <SideBarFooter arrowButtonClickHandler={handleCollapseButtonClick} />
+      <SideBarFooter
+        isCollapsed={isCollapsed}
+        arrowButtonClickHandler={handleCollapseButtonClick}
+      />
     </nav>
   );
 }
