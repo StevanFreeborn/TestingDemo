@@ -3,9 +3,11 @@ namespace TestingDemo.Core.Services;
 public class UserService : IUserService
 {
   private readonly IUserRepository _userRepository;
-  public UserService(IUserRepository userRepository)
+  private readonly IAuthenticator _authenticator;
+  public UserService(IUserRepository userRepository, IAuthenticator authenticator)
   {
     _userRepository = userRepository;
+    _authenticator = authenticator;
   }
 
   public async Task<User> GetUserByIdAsync(string id)
@@ -29,7 +31,7 @@ public class UserService : IUserService
       throw new InvalidLoginException();
     }
 
-    var isCorrectPassword = Authenticator.VerifyPassword(password, user.Password, user.Salt);
+    var isCorrectPassword = _authenticator.VerifyPassword(password, user.Password, user.Salt);
 
     if (isCorrectPassword is false)
     {
@@ -48,8 +50,8 @@ public class UserService : IUserService
       throw new ModelAlreadyExistsException($"A user with the user name {user.Username} already exists");
     }
 
-    var userSalt = Authenticator.GenerateRandomSalt();
-    var hashedPassword = Authenticator.HashPassword(user.Password, userSalt);
+    var userSalt = _authenticator.GenerateRandomSalt();
+    var hashedPassword = _authenticator.HashPassword(user.Password, userSalt);
 
     user.Password = hashedPassword;
     user.Salt = userSalt;
@@ -84,7 +86,7 @@ public class UserService : IUserService
       throw new InvalidResetPasswordException("The verification password does not match the new password");
     }
 
-    var newPasswordHash = Authenticator.HashPassword(newPassword, existingUser.Salt);
+    var newPasswordHash = _authenticator.HashPassword(newPassword, existingUser.Salt);
 
     if (newPasswordHash == existingUser.Password)
     {

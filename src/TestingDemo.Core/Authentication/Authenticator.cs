@@ -1,8 +1,8 @@
 namespace TestingDemo.Core.Authentication;
 
-public static class Authenticator
+public class Authenticator : IAuthenticator
 {
-  public static string HashPassword(string password, string salt)
+  public string HashPassword(string password, string salt)
   {
     var passwordBytes = Encoding.UTF8.GetBytes(password);
     var saltBytes = Convert.FromBase64String(salt);
@@ -16,7 +16,7 @@ public static class Authenticator
     return Convert.ToBase64String(hash);
   }
 
-  public static string GenerateRandomSalt()
+  public string GenerateRandomSalt()
   {
     var saltBytes = new byte[32];
     using var rng = RandomNumberGenerator.Create();
@@ -24,7 +24,7 @@ public static class Authenticator
     return Convert.ToBase64String(saltBytes);
   }
 
-  public static bool VerifyPassword(string password, string hashedPassword, string salt)
+  public bool VerifyPassword(string password, string hashedPassword, string salt)
   {
     var newHashedPassword = HashPassword(password, salt);
     return newHashedPassword == hashedPassword;

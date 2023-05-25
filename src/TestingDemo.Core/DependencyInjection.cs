@@ -12,6 +12,7 @@ public static class DependencyInjection
       sp => sp.GetRequiredService<IOptions<JwtTokenSettings>>().Value
     );
 
+    services.AddScoped<IAuthenticator, Authenticator>();
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<IEmailService, EmailService>();
     services.AddScoped<ITokenService, TokenService>();
