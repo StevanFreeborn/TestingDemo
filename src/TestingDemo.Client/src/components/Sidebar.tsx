@@ -11,9 +11,62 @@ import LeftArrowIcon from './icons/LeftArrowIcon';
 import MagnifyIcon from './icons/MagnifyIcon';
 import ReportIcon from './icons/ReportIcon';
 
-export default function SideBar() {
+function SideBarHeader() {
   const username = 'Stevan';
   const role = 'System Administrator';
+  return (
+    <div className={styles.navHeaderContainer}>
+      <div className={styles.logoContainer}>
+        <Link to="/">
+          <img alt="testing-demo-logo" src={logo} className={styles.logo} />
+        </Link>
+      </div>
+      <div className={styles.profileContainer}>
+        <div className={styles.profilePictureContainer}>
+          <img alt="default-profile" src={defaultProfilePicture} />
+        </div>
+        <div className={styles.profileInfoContainer}>
+          <div className={styles.userName}>{username}</div>
+          <div className={styles.currentRole}>{role}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SideBarFooter({
+  arrowButtonClickHandler,
+}: {
+  arrowButtonClickHandler: (e: MouseEvent<HTMLButtonElement>) => void;
+}) {
+  return (
+    <div className={styles.navFooterContainer}>
+      <div title="Collapse" className={styles.navItemFooter}>
+        <button
+          onClick={arrowButtonClickHandler}
+          className={styles.navIconFooterContainer}
+        >
+          <LeftArrowIcon className={styles.navFooterIcon} />
+        </button>
+      </div>
+      <div title="Help" className={styles.navItemFooter}>
+        <a
+          href="/Help/OnspringDocumentation.htm"
+          className={styles.navIconFooterContainer}
+        >
+          <HelpCircleIcon className={styles.navFooterIcon} />
+        </a>
+      </div>
+      <div title="All Systems Operational" className={styles.navItemFooter}>
+        <div className={styles.navIconFooterContainer}>
+          <div className={styles.statusIcon}></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function SideBar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   function handleCollapseButtonClick(e: MouseEvent<HTMLButtonElement>) {
@@ -24,22 +77,7 @@ export default function SideBar() {
     <nav
       className={isCollapsed ? styles.primaryNavCollapsed : styles.primaryNav}
     >
-      <div className={styles.navHeaderContainer}>
-        <div className={styles.logoContainer}>
-          <Link to="/">
-            <img alt="testing-demo-logo" src={logo} className={styles.logo} />
-          </Link>
-        </div>
-        <div className={styles.profileContainer}>
-          <div className={styles.profilePictureContainer}>
-            <img alt="default-profile" src={defaultProfilePicture} />
-          </div>
-          <div className={styles.profileInfoContainer}>
-            <div className={styles.userName}>{username}</div>
-            <div className={styles.currentRole}>{role}</div>
-          </div>
-        </div>
-      </div>
+      <SideBarHeader />
       <div className={styles.navBodyContainer}>
         <div className={styles.navigationTopContainer}>
           <div className={styles.searchContainer}>
@@ -81,29 +119,7 @@ export default function SideBar() {
           </Link>
         </div>
       </div>
-      <div className={styles.navFooterContainer}>
-        <div title="Collapse" className={styles.navItemFooter}>
-          <button
-            onClick={handleCollapseButtonClick}
-            className={styles.navIconFooterContainer}
-          >
-            <LeftArrowIcon className={styles.navFooterIcon} />
-          </button>
-        </div>
-        <div title="Help" className={styles.navItemFooter}>
-          <a
-            href="/Help/OnspringDocumentation.htm"
-            className={styles.navIconFooterContainer}
-          >
-            <HelpCircleIcon className={styles.navFooterIcon} />
-          </a>
-        </div>
-        <div title="All Systems Operational" className={styles.navItemFooter}>
-          <div className={styles.navIconFooterContainer}>
-            <div className={styles.statusIcon}></div>
-          </div>
-        </div>
-      </div>
+      <SideBarFooter arrowButtonClickHandler={handleCollapseButtonClick} />
     </nav>
   );
 }
