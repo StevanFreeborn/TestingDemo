@@ -72,7 +72,7 @@ public class UserService : IUserService
     return user;
   }
 
-  public async Task<User> UpdateUserPassword(string userId, string newPassword, string confirmedPassword)
+  public async Task<User> UpdateUserPasswordAsync(string userId, string newPassword, string confirmedPassword)
   {
     var existingUser = await _userRepository.GetByIdAsync(userId);
 

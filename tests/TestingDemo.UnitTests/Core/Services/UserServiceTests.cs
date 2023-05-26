@@ -196,4 +196,21 @@ public class UserServiceTests
 
     result.Should().Be(existingUser);
   }
+
+  [Fact]
+  public async Task UpdateUserPasswordAsync_WhenCalledAndUserIsNotFoundWithGivenUserId_ItShouldThrowInvalidResetPasswordTokenException()
+  {
+    _userRepositoryMock.Setup(
+      m => m.GetByIdAsync(It.IsAny<string>())
+    )
+    .ReturnsAsync((User?) null);
+
+    var action = () => _userService.UpdateUserPasswordAsync(
+      "userId",
+      "newPassword",
+      "confirmedPassword"
+    );
+
+    await action.Should().ThrowAsync<InvalidResetPasswordTokenException>();
+  }
 }

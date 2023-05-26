@@ -108,7 +108,7 @@ public class AuthController : ControllerBase
   public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto resetRequest)
   {
     var authToken = await _tokenService.GetPasswordResetToken(resetRequest.Token);
-    var updatedUser = await _userService.UpdateUserPassword(
+    var updatedUser = await _userService.UpdateUserPasswordAsync(
       authToken.UserId,
       resetRequest.Password,
       resetRequest.ConfirmPassword
