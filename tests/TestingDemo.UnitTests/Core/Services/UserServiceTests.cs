@@ -168,4 +168,32 @@ public class UserServiceTests
       Times.Once()
     );
   }
+
+  [Fact]
+  public async Task GetUserByUsernameAsync_WhenCalledAndUserIsNotFound_ItShouldThrowAModelNotFoundException()
+  {
+    _userRepositoryMock.Setup(
+      m => m.GetByUsernameAsync(It.IsAny<string>())
+    )
+    .ReturnsAsync((User?) null);
+
+    var action = () => _userService.GetUserByUsernameAsync("id");
+
+    await action.Should().ThrowAsync<ModelNotFoundException>();
+  }
+
+  [Fact]
+  public async Task GetUserByUsernameAsync_WhenCalledAndUserIsFound_ItShouldReturnTheUser()
+  {
+    var existingUser = new User();
+
+    _userRepositoryMock.Setup(
+      m => m.GetByUsernameAsync(It.IsAny<string>())
+    )
+    .ReturnsAsync(existingUser);
+
+    var result = await _userService.GetUserByUsernameAsync(existingUser.Username);
+
+    result.Should().Be(existingUser);
+  }
 }
